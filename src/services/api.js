@@ -1,6 +1,19 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
+const baseUrl = 'https://joyzone.xyz'
+
+
+/**
+ * 新增接口
+ */
+
+export async function queryLogList(params) {
+  return request(`${baseUrl}/api/log?${stringify(params)}`);
+}
+
+/************************************/
+
 export async function queryProjectNotice() {
   return request('/api/project/notice');
 }
