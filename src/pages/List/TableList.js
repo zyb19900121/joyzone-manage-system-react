@@ -506,9 +506,10 @@ class TableList extends PureComponent {
   };
 
   renderSimpleForm() {
+		console.log('this.props: ', this.props);
     const {
       form: { getFieldDecorator },
-    } = this.props;
+		} = this.props;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>

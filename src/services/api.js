@@ -1,37 +1,50 @@
-import { stringify } from 'qs';
-import restFormat from '@/utils/restfulParamsFormat'
-import request from '@/utils/request';
+import { stringify } from "qs";
+import restFormat from "@/utils/restfulParamsFormat";
+import request from "@/utils/request";
 
-const baseUrl = 'https://joyzone.xyz'
-
+const baseUrl = "http://127.0.0.1:3000";
 
 /**
  * 新增接口
  */
 
+//用户注册
+export async function register(params) {
+  // return request(`${baseUrl}/api/log?${stringify(params)}`)
+  return request(`${baseUrl}/register`, {
+    method: "POST",
+    body: {
+      ...params,
+      method: "post"
+    }
+  });
+}
+
+//查询访问日志
 export async function queryLogList(params) {
   return request(`${baseUrl}/api/log?${stringify(params)}`);
 }
 
+//删除访问日志
 export async function removeLogRecords(params) {
-	// return request(`${baseUrl}/api/log?${stringify(params)}`)
-	return request(`${baseUrl}/api/log/${restFormat(params)}`, {
-    method: 'DELETE',
+  // return request(`${baseUrl}/api/log?${stringify(params)}`)
+  return request(`${baseUrl}/api/log/${restFormat(params)}`, {
+    method: "DELETE",
     body: {
       // ...params,
       // method: 'delete',
-    },
+    }
   });
 }
 
 /************************************/
 
 export async function queryProjectNotice() {
-  return request('/api/project/notice');
+  return request("/api/project/notice");
 }
 
 export async function queryActivities() {
-  return request('/api/activities');
+  return request("/api/activities");
 }
 
 export async function queryRule(params) {
@@ -39,48 +52,48 @@ export async function queryRule(params) {
 }
 
 export async function removeRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
+  return request("/api/rule", {
+    method: "POST",
     body: {
       ...params,
-      method: 'delete',
-    },
+      method: "delete"
+    }
   });
 }
 
 export async function addRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
+  return request("/api/rule", {
+    method: "POST",
     body: {
       ...params,
-      method: 'post',
-    },
+      method: "post"
+    }
   });
 }
 
 export async function updateRule(params = {}) {
   return request(`/api/rule?${stringify(params.query)}`, {
-    method: 'POST',
+    method: "POST",
     body: {
       ...params.body,
-      method: 'update',
-    },
+      method: "update"
+    }
   });
 }
 
 export async function fakeSubmitForm(params) {
-  return request('/api/forms', {
-    method: 'POST',
-    body: params,
+  return request("/api/forms", {
+    method: "POST",
+    body: params
   });
 }
 
 export async function fakeChartData() {
-  return request('/api/fake_chart_data');
+  return request("/api/fake_chart_data");
 }
 
 export async function queryTags() {
-  return request('/api/tags');
+  return request("/api/tags");
 }
 
 export async function queryBasicProfile(id) {
@@ -88,7 +101,7 @@ export async function queryBasicProfile(id) {
 }
 
 export async function queryAdvancedProfile() {
-  return request('/api/profile/advanced');
+  return request("/api/profile/advanced");
 }
 
 export async function queryFakeList(params) {
@@ -98,47 +111,47 @@ export async function queryFakeList(params) {
 export async function removeFakeList(params) {
   const { count = 5, ...restParams } = params;
   return request(`/api/fake_list?count=${count}`, {
-    method: 'POST',
+    method: "POST",
     body: {
       ...restParams,
-      method: 'delete',
-    },
+      method: "delete"
+    }
   });
 }
 
 export async function addFakeList(params) {
   const { count = 5, ...restParams } = params;
   return request(`/api/fake_list?count=${count}`, {
-    method: 'POST',
+    method: "POST",
     body: {
       ...restParams,
-      method: 'post',
-    },
+      method: "post"
+    }
   });
 }
 
 export async function updateFakeList(params) {
   const { count = 5, ...restParams } = params;
   return request(`/api/fake_list?count=${count}`, {
-    method: 'POST',
+    method: "POST",
     body: {
       ...restParams,
-      method: 'update',
-    },
+      method: "update"
+    }
   });
 }
 
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
-    method: 'POST',
-    body: params,
+  return request("/api/login/account", {
+    method: "POST",
+    body: params
   });
 }
 
 export async function fakeRegister(params) {
-  return request('/api/register', {
-    method: 'POST',
-    body: params,
+  return request("/api/register", {
+    method: "POST",
+    body: params
   });
 }
 

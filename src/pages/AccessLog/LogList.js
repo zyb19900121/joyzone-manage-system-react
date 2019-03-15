@@ -22,20 +22,23 @@ import {
   Steps,
   Radio
 } from "antd";
+const { MonthPicker, RangePicker } = DatePicker;
 import StandardTable from "@/components/StandardTable";
 import PageHeaderWrapper from "@/components/PageHeaderWrapper";
 
 import styles from "./LogList.less";
 
+const FormItem = Form.Item;
+
 @connect(({ logList, loading }) => ({
   logList,
   loading: loading.models.logList
 }))
+@Form.create()
 class LogList extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
-    expandForm: false,
     selectedRows: [],
     formValues: {},
     stepFormValues: {}
@@ -50,7 +53,6 @@ class LogList extends PureComponent {
     {
       title: "手机品牌",
       dataIndex: "phone_brand"
-      // render: text => <a onClick={() => this.previewItem(text)}>{text}</a>,
     },
     {
       title: "手机型号",
@@ -59,55 +61,17 @@ class LogList extends PureComponent {
     {
       title: "手机系统",
       dataIndex: "phone_system"
-      // sorter: true,
-      // render: val => `${val} 万`,
-      // mark to display a total number
-      // needTotal: true
     },
     {
       title: "访问时间",
       dataIndex: "visit_date",
       render: val => <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>
     },
-    // {
-    //   title: '状态',
-    //   dataIndex: 'status',
-    //   filters: [
-    //     {
-    //       text: status[0],
-    //       value: 0,
-    //     },
-    //     {
-    //       text: status[1],
-    //       value: 1,
-    //     },
-    //     {
-    //       text: status[2],
-    //       value: 2,
-    //     },
-    //     {
-    //       text: status[3],
-    //       value: 3,
-    //     },
-    //   ],
-    //   render(val) {
-    //     return <Badge status={statusMap[val]} text={status[val]} />;
-    //   },
-    // },
-    // {
-    //   title: '上次调度时间',
-    //   dataIndex: 'updatedAt',
-    //   sorter: true,
-    //   render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-    // },
     {
       title: "操作",
       render: record => (
         <Fragment>
           <a onClick={() => this.handleDeleteLogRecord(record.id)}>删除</a>
-
-          {/* <Divider type="vertical" /> */}
-          {/* <a href="">订阅警报</a> */}
         </Fragment>
       )
     }
@@ -123,6 +87,7 @@ class LogList extends PureComponent {
 
   handleDeleteLogRecord = record => {
     const { dispatch } = this.props;
+    const { formValues } = this.state;
     Modal.confirm({
       title: "删除记录",
       content: "确定删除该记录吗？",
@@ -133,7 +98,14 @@ class LogList extends PureComponent {
           type: "logList/remove",
           payload: {
             ...{ pagination: this.props.logList.data.pagination },
-            ...{ id: record }
+            ...{ id: record },
+            ...{ startDate: formValues.startDate, endDate: formValues.endDate }
+          },
+          callback: () => {
+            message.success("删除成功");
+            this.setState({
+              selectedRows: []
+            });
           }
         });
       }
@@ -151,10 +123,10 @@ class LogList extends PureComponent {
     }, {});
 
     const params = {
-      currentPage: pagination.current,
-      pageSize: pagination.pageSize,
       ...formValues,
-      ...filters
+      ...filters,
+      currentPage: pagination.current,
+      pageSize: pagination.pageSize
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
@@ -170,48 +142,17 @@ class LogList extends PureComponent {
     router.push(`/profile/basic/${id}`);
   };
 
-  // handleFormReset = () => {
-  //   const { form, dispatch } = this.props;
-  //   form.resetFields();
-  //   this.setState({
-  //     formValues: {}
-  //   });
-  //   dispatch({
-  //     type: "rule/fetch",
-  //     payload: {}
-  //   });
-  // };
-
-  // toggleForm = () => {
-  //   const { expandForm } = this.state;
-  //   this.setState({
-  //     expandForm: !expandForm
-  //   });
-  // };
-
-  // handleMenuClick = e => {
-  //   const { dispatch } = this.props;
-  //   const { selectedRows } = this.state;
-
-  //   if (selectedRows.length === 0) return;
-  //   switch (e.key) {
-  //     case "remove":
-  //       dispatch({
-  //         type: "rule/remove",
-  //         payload: {
-  //           key: selectedRows.map(row => row.key)
-  //         },
-  //         callback: () => {
-  //           this.setState({
-  //             selectedRows: []
-  //           });
-  //         }
-  //       });
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
+  handleFormReset = () => {
+    const { form, dispatch } = this.props;
+    form.resetFields();
+    this.setState({
+      formValues: {}
+    });
+    dispatch({
+      type: "logList/fetch",
+      payload: { ...this.initialParams }
+    });
+  };
 
   handleSelectRows = rows => {
     this.setState({
@@ -219,214 +160,86 @@ class LogList extends PureComponent {
     });
   };
 
-  // handleSearch = e => {
-  //   e.preventDefault();
+  handleSearch = e => {
+    e.preventDefault();
 
-  //   const { dispatch, form } = this.props;
+    const { dispatch, form } = this.props;
 
-  //   form.validateFields((err, fieldsValue) => {
-  //     if (err) return;
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
 
-  //     const values = {
-  //       ...fieldsValue,
-  //       updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf()
-  //     };
+      const rangeTimeValue = fieldsValue["range-time-picker"];
 
-  //     this.setState({
-  //       formValues: values
-  //     });
+      const values = {
+        ...this.initialParams,
+        startDate: rangeTimeValue
+          ? rangeTimeValue[0].format("YYYY-MM-DD HH:mm:ss")
+          : null,
+        endDate: rangeTimeValue
+          ? rangeTimeValue[1].format("YYYY-MM-DD HH:mm:ss")
+          : null
+      };
 
-  //     dispatch({
-  //       type: "rule/fetch",
-  //       payload: values
-  //     });
-  //   });
-  // };
+      this.setState({
+        formValues: values
+      });
 
-  // handleModalVisible = flag => {
-  //   this.setState({
-  //     modalVisible: !!flag
-  //   });
-  // };
+      dispatch({
+        type: "logList/fetch",
+        payload: values
+      });
+    });
+  };
 
-  // handleUpdateModalVisible = (flag, record) => {
-  //   this.setState({
-  //     updateModalVisible: !!flag,
-  //     stepFormValues: record || {}
-  //   });
-  // };
+  handleDatapickerChange(dates) {
+    if (!dates.length) {
+      this.handleFormReset();
+    }
+  }
 
-  // handleAdd = fields => {
-  //   const { dispatch } = this.props;
-  //   dispatch({
-  //     type: "rule/add",
-  //     payload: {
-  //       desc: fields.desc
-  //     }
-  //   });
-
-  //   message.success("添加成功");
-  //   this.handleModalVisible();
-  // };
-
-  // handleUpdate = fields => {
-  //   const { dispatch } = this.props;
-  //   const { formValues } = this.state;
-  //   dispatch({
-  //     type: "rule/update",
-  //     payload: {
-  //       query: formValues,
-  //       body: {
-  //         name: fields.name,
-  //         desc: fields.desc,
-  //         key: fields.key
-  //       }
-  //     }
-  //   });
-
-  //   message.success("配置成功");
-  //   this.handleUpdateModalVisible();
-  // };
-
-  // renderSimpleForm() {
-  //   const {
-  //     form: { getFieldDecorator }
-  //   } = this.props;
-  //   return (
-  //     <Form onSubmit={this.handleSearch} layout="inline">
-  //       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="规则名称">
-  //             {getFieldDecorator("name")(<Input placeholder="请输入" />)}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="使用状态">
-  //             {getFieldDecorator("status")(
-  //               <Select placeholder="请选择" style={{ width: "100%" }}>
-  //                 <Option value="0">关闭</Option>
-  //                 <Option value="1">运行中</Option>
-  //               </Select>
-  //             )}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <span className={styles.submitButtons}>
-  //             <Button type="primary" htmlType="submit">
-  //               查询
-  //             </Button>
-  //             <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-  //               重置
-  //             </Button>
-  //             <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-  //               展开 <Icon type="down" />
-  //             </a>
-  //           </span>
-  //         </Col>
-  //       </Row>
-  //     </Form>
-  //   );
-  // }
-
-  // renderAdvancedForm() {
-  //   const {
-  //     form: { getFieldDecorator }
-  //   } = this.props;
-  //   return (
-  //     <Form onSubmit={this.handleSearch} layout="inline">
-  //       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="规则名称">
-  //             {getFieldDecorator("name")(<Input placeholder="请输入" />)}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="使用状态">
-  //             {getFieldDecorator("status")(
-  //               <Select placeholder="请选择" style={{ width: "100%" }}>
-  //                 <Option value="0">关闭</Option>
-  //                 <Option value="1">运行中</Option>
-  //               </Select>
-  //             )}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="调用次数">
-  //             {getFieldDecorator("number")(
-  //               <InputNumber style={{ width: "100%" }} />
-  //             )}
-  //           </FormItem>
-  //         </Col>
-  //       </Row>
-  //       <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="更新日期">
-  //             {getFieldDecorator("date")(
-  //               <DatePicker
-  //                 style={{ width: "100%" }}
-  //                 placeholder="请输入更新日期"
-  //               />
-  //             )}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="使用状态">
-  //             {getFieldDecorator("status3")(
-  //               <Select placeholder="请选择" style={{ width: "100%" }}>
-  //                 <Option value="0">关闭</Option>
-  //                 <Option value="1">运行中</Option>
-  //               </Select>
-  //             )}
-  //           </FormItem>
-  //         </Col>
-  //         <Col md={8} sm={24}>
-  //           <FormItem label="使用状态">
-  //             {getFieldDecorator("status4")(
-  //               <Select placeholder="请选择" style={{ width: "100%" }}>
-  //                 <Option value="0">关闭</Option>
-  //                 <Option value="1">运行中</Option>
-  //               </Select>
-  //             )}
-  //           </FormItem>
-  //         </Col>
-  //       </Row>
-  //       <div style={{ overflow: "hidden" }}>
-  //         <div style={{ marginBottom: 24 }}>
-  //           <Button type="primary" htmlType="submit">
-  //             查询
-  //           </Button>
-  //           <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-  //             重置
-  //           </Button>
-  //           <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-  //             收起 <Icon type="up" />
-  //           </a>
-  //         </div>
-  //       </div>
-  //     </Form>
-  //   );
-  // }
-
-  // renderForm() {
-  //   const { expandForm } = this.state;
-  //   return expandForm ? this.renderAdvancedForm() : this.renderSimpleForm();
-  // }
+  renderSimpleForm() {
+    const {
+      form: { getFieldDecorator }
+    } = this.props;
+    const rangeConfig = {
+      rules: [
+        { type: "array", required: false, message: "Please select time!" }
+      ]
+    };
+    return (
+      <Form onSubmit={this.handleSearch} layout="inline">
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          <Col xl={8} lg={24} md={24} sm={24}>
+            <Form.Item>
+              {getFieldDecorator("range-time-picker", rangeConfig)(
+                <RangePicker
+                  onChange={dates => this.handleDatapickerChange(dates)}
+                  showTime={{
+                    defaultValue: [
+                      moment("00:00:00", "HH:mm:ss"),
+                      moment("23:59:59", "HH:mm:ss")
+                    ]
+                  }}
+                />
+              )}
+            </Form.Item>
+          </Col>
+          <Col xl={16} lg={24} md={24} sm={24}>
+            <span className={styles.submitButtons}>
+              <Button type="primary" htmlType="submit">
+                查询
+              </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                重置
+              </Button>
+            </span>
+          </Col>
+        </Row>
+      </Form>
+    );
+  }
 
   render() {
-    // const data = {
-    //   list: [
-    //     { id: 1, name: "test01" },
-    //     { id: 2, name: "test02" },
-    //     { id: 3, name: "test03" },
-    //     { id: 4, name: "test04" }
-    //   ],
-    //   pagination: {
-    //     current: 1,
-    //     pageSize: 10,
-    //     total: 31
-    //   }
-    // };
-
     const {
       logList: { data },
       loading
@@ -437,30 +250,15 @@ class LogList extends PureComponent {
       updateModalVisible,
       stepFormValues
     } = this.state;
-    // const menu = (
-    //   <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-    //     <Menu.Item key="remove">删除</Menu.Item>
-    //     <Menu.Item key="approval">批量审批</Menu.Item>
-    //   </Menu>
-    // );
 
-    // const parentMethods = {
-    //   handleAdd: this.handleAdd,
-    //   handleModalVisible: this.handleModalVisible,
-    // };
-    // const updateMethods = {
-    //   handleUpdateModalVisible: this.handleUpdateModalVisible,
-    //   handleUpdate: this.handleUpdate,
-    // };
     return (
       <PageHeaderWrapper title="访问日志">
         <Card bordered={false}>
           <div className={styles.tableList}>
-            {/* <div className={styles.tableListForm}>{this.renderForm()}</div> */}
+            <div className={styles.tableListForm}>
+              {this.renderSimpleForm()}
+            </div>
             <div className={styles.tableListOperator}>
-              {/* <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
-                新建
-              </Button> */}
               {selectedRows.length > 0 && (
                 <span>
                   <Button
@@ -472,11 +270,6 @@ class LogList extends PureComponent {
                   >
                     删除
                   </Button>
-                  {/* <Dropdown overlay={menu}>
-                    <Button>
-                      更多操作 <Icon type="down" />
-                    </Button>
-                  </Dropdown> */}
                 </span>
               )}
             </div>
@@ -490,14 +283,6 @@ class LogList extends PureComponent {
             />
           </div>
         </Card>
-        {/* <CreateForm {...parentMethods} modalVisible={modalVisible} />
-        {stepFormValues && Object.keys(stepFormValues).length ? (
-          <UpdateForm
-            {...updateMethods}
-            updateModalVisible={updateModalVisible}
-            values={stepFormValues}
-          />
-        ) : null} */}
       </PageHeaderWrapper>
     );
   }

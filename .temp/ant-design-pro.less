@@ -2072,6 +2072,51 @@
   Convert to from  src/pages/AccessLog/LogList.less
  */
 
+.antd-pro-pages-access-log-log-list-tableList {
+  .antd-pro-pages-access-log-log-list-tableListOperator {
+    margin-bottom: 16px;
+    button {
+      margin-right: 8px;
+    }
+  }
+}
+
+.antd-pro-pages-access-log-log-list-tableListForm {
+  .ant-form-item {
+    display: flex;
+    margin-right: 0;
+    margin-bottom: 24px;
+    > .ant-form-item-label {
+      width: auto;
+      padding-right: 8px;
+      line-height: 32px;
+    }
+    .ant-form-item-control {
+      line-height: 32px;
+    }
+  }
+  .ant-form-item-control-wrapper {
+    flex: 1;
+  }
+  .antd-pro-pages-access-log-log-list-submitButtons {
+    display: block;
+    margin-bottom: 24px;
+    white-space: nowrap;
+  }
+}
+
+@media screen and (max-width: @screen-lg) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 8px;
+  }
+}
+
 /* 
   Convert to from  src/pages/Account/Center/Articles.less
  */

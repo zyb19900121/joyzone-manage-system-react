@@ -19,6 +19,7 @@ export default {
     *fetch({ payload }, { call, put }) {
       const response = yield call(queryLogList, payload);
       response.pagination = {
+        current: payload.currentPage,
         currentPage: payload.currentPage,
         pageSize: payload.pageSize,
         total: response.total
@@ -41,7 +42,11 @@ export default {
     *remove({ payload, callback }, { call, put }) {
       yield call(removeLogRecords, payload.id);
 
-      let response = yield call(queryLogList, payload.pagination);
+      let response = yield call(queryLogList, {
+        ...payload.pagination,
+        startDate: payload.startDate,
+        endDate: payload.endDate
+      });
 
       if (!response.list.length && payload.pagination.currentPage > 1) {
         payload.pagination.currentPage--;
