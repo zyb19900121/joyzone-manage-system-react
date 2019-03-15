@@ -1,4 +1,9 @@
-import { queryLogList, removeRule, addRule, updateRule } from "@/services/api";
+import {
+  queryLogList,
+  removeLogRecords,
+  addRule,
+  updateRule
+} from "@/services/api";
 
 export default {
   namespace: "logList",
@@ -12,7 +17,6 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      console.log("payload: ", payload);
       const response = yield call(queryLogList, payload);
       response.pagination = {
         currentPage: payload.currentPage,
@@ -20,7 +24,7 @@ export default {
         total: response.total
       };
       delete response.total;
-      console.log("response: ", response);
+
       yield put({
         type: "save",
         payload: response
@@ -35,7 +39,21 @@ export default {
       if (callback) callback();
     },
     *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
+      yield call(removeLogRecords, payload.id);
+
+      let response = yield call(queryLogList, payload.pagination);
+
+      if (!response.list.length && payload.pagination.currentPage > 1) {
+        payload.pagination.currentPage--;
+        response = yield call(queryLogList, payload.pagination);
+      }
+      response.pagination = {
+        currentPage: payload.pagination.currentPage,
+        pageSize: payload.pagination.pageSize,
+        total: response.total
+      };
+      delete response.total;
+
       yield put({
         type: "save",
         payload: response

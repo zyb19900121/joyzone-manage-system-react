@@ -1,4 +1,5 @@
 import { stringify } from 'qs';
+import restFormat from '@/utils/restfulParamsFormat'
 import request from '@/utils/request';
 
 const baseUrl = 'https://joyzone.xyz'
@@ -10,6 +11,17 @@ const baseUrl = 'https://joyzone.xyz'
 
 export async function queryLogList(params) {
   return request(`${baseUrl}/api/log?${stringify(params)}`);
+}
+
+export async function removeLogRecords(params) {
+	// return request(`${baseUrl}/api/log?${stringify(params)}`)
+	return request(`${baseUrl}/api/log/${restFormat(params)}`, {
+    method: 'DELETE',
+    body: {
+      // ...params,
+      // method: 'delete',
+    },
+  });
 }
 
 /************************************/

@@ -66,8 +66,8 @@ class LogList extends PureComponent {
     },
     {
       title: "访问时间",
-			dataIndex: "visit_date",
-			render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      dataIndex: "visit_date",
+      render: val => <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>
     },
     // {
     //   title: '状态',
@@ -101,14 +101,15 @@ class LogList extends PureComponent {
     //   render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     // },
     {
-      title: "操作"
-      // render: (text, record) => (
-      //   <Fragment>
-      //     <a onClick={() => this.handleUpdateModalVisible(true, record)}>配置</a>
-      //     <Divider type="vertical" />
-      //     <a href="">订阅警报</a>
-      //   </Fragment>
-      // ),
+      title: "操作",
+      render: record => (
+        <Fragment>
+          <a onClick={() => this.handleDeleteLogRecord(record.id)}>删除</a>
+
+          {/* <Divider type="vertical" /> */}
+          {/* <a href="">订阅警报</a> */}
+        </Fragment>
+      )
     }
   ];
 
@@ -119,6 +120,25 @@ class LogList extends PureComponent {
       payload: this.initialParams
     });
   }
+
+  handleDeleteLogRecord = record => {
+    const { dispatch } = this.props;
+    Modal.confirm({
+      title: "删除记录",
+      content: "确定删除该记录吗？",
+      okText: "确认",
+      cancelText: "取消",
+      onOk: () => {
+        dispatch({
+          type: "logList/remove",
+          payload: {
+            ...{ pagination: this.props.logList.data.pagination },
+            ...{ id: record }
+          }
+        });
+      }
+    });
+  };
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -131,16 +151,15 @@ class LogList extends PureComponent {
     }, {});
 
     const params = {
-			currentPage: pagination.current,
+      currentPage: pagination.current,
       pageSize: pagination.pageSize,
       ...formValues,
       ...filters
     };
     if (sorter.field) {
-			params.sorter = `${sorter.field}_${sorter.order}`;
+      params.sorter = `${sorter.field}_${sorter.order}`;
     }
-		
-		
+
     dispatch({
       type: "logList/fetch",
       payload: params
@@ -194,11 +213,11 @@ class LogList extends PureComponent {
   //   }
   // };
 
-  // handleSelectRows = rows => {
-  //   this.setState({
-  //     selectedRows: rows
-  //   });
-  // };
+  handleSelectRows = rows => {
+    this.setState({
+      selectedRows: rows
+    });
+  };
 
   // handleSearch = e => {
   //   e.preventDefault();
@@ -441,24 +460,32 @@ class LogList extends PureComponent {
             <div className={styles.tableListOperator}>
               {/* <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建
-              </Button>
+              </Button> */}
               {selectedRows.length > 0 && (
                 <span>
-                  <Button>批量操作</Button>
-                  <Dropdown overlay={menu}>
+                  <Button
+                    onClick={() =>
+                      this.handleDeleteLogRecord(
+                        this.state.selectedRows.map(item => item.id)
+                      )
+                    }
+                  >
+                    删除
+                  </Button>
+                  {/* <Dropdown overlay={menu}>
                     <Button>
                       更多操作 <Icon type="down" />
                     </Button>
-                  </Dropdown>
+                  </Dropdown> */}
                 </span>
-              )} */}
+              )}
             </div>
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
               data={data}
               columns={this.columns}
-              // onSelectRow={this.handleSelectRows}
+              onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />
           </div>
