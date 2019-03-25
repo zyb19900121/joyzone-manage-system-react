@@ -8,6 +8,30 @@ const baseUrl = "http://127.0.0.1:3000";
  * 新增接口
  */
 
+//获取短信验证码
+export async function getCaptcha(params) {
+  // return request(`${baseUrl}/api/log?${stringify(params)}`)
+  return request(`${baseUrl}/getCaptcha`, {
+    method: "POST",
+    body: {
+      ...params,
+      method: "post"
+    }
+  });
+}
+
+//查看用户名是否被注册
+export async function checkExist(params) {
+  // return request(`${baseUrl}/api/log?${stringify(params)}`)
+  return request(`${baseUrl}/checkExist`, {
+    method: "POST",
+    body: {
+      ...params,
+      method: "post"
+    }
+  });
+}
+
 //用户注册
 export async function register(params) {
   // return request(`${baseUrl}/api/log?${stringify(params)}`)
