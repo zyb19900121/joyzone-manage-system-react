@@ -15,6 +15,11 @@ let routes = [
   component: () => import(/* webpackChunkName: "layouts__UserLayout" */'../../layouts/UserLayout'),
   LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
 }),
+    "Routes": [require('../Authorized').default],
+    "authority": [
+      "admin",
+      "user"
+    ],
     "routes": [
       {
         "path": "/user",
@@ -73,6 +78,10 @@ models: () => [
   LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
 }),
     "Routes": [require('../Authorized').default],
+    "authority": [
+      "admin",
+      "user"
+    ],
     "routes": [
       {
         "path": "/",
@@ -83,6 +92,11 @@ models: () => [
         "path": "/dashboard",
         "name": "dashboard",
         "icon": "dashboard",
+        "Routes": [require('../Authorized').default],
+        "authority": [
+          "admin",
+          "user"
+        ],
         "routes": [
           {
             "path": "/dashboard/analysis",
@@ -621,6 +635,10 @@ models: () => [
         "path": "/accesslog",
         "icon": "eye",
         "name": "accesslog",
+        "Routes": [require('../Authorized').default],
+        "authority": [
+          "admin"
+        ],
         "component": _dvaDynamic({
   app: window.g_app,
 models: () => [

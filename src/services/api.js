@@ -32,6 +32,18 @@ export async function checkExist(params) {
   });
 }
 
+//查看手机号是否被注册
+export async function checkMobileExist(params) {
+  // return request(`${baseUrl}/api/log?${stringify(params)}`)
+  return request(`${baseUrl}/checkMobileExist`, {
+    method: "POST",
+    body: {
+      ...params,
+      method: "post"
+    }
+  });
+}
+
 //用户注册
 export async function register(params) {
   // return request(`${baseUrl}/api/log?${stringify(params)}`)
@@ -44,9 +56,20 @@ export async function register(params) {
   });
 }
 
+//用户注册
+export async function login(params) {
+  return request(`${baseUrl}/loginForReact`, {
+    method: "POST",
+    body: {
+      ...params,
+      method: "post"
+    }
+  });
+}
+
 //查询访问日志
 export async function queryLogList(params) {
-  return request(`${baseUrl}/api/log?${stringify(params)}`);
+  return request(`${baseUrl}/manage/log?${stringify(params)}`);
 }
 
 //删除访问日志

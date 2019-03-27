@@ -2,7 +2,9 @@ export default [
   // user
   {
     path: "/user",
-    component: "../layouts/UserLayout",
+		component: "../layouts/UserLayout",
+		Routes: ["src/pages/Authorized"],
+    authority: ["admin", "user"],
     routes: [
       { path: "/user", redirect: "/user/login" },
       { path: "/user/login", name: "login", component: "./User/Login" },
@@ -23,6 +25,7 @@ export default [
     path: "/",
     component: "../layouts/BasicLayout",
     Routes: ["src/pages/Authorized"],
+    authority: ["admin", "user"],
     routes: [
       // dashboard
       { path: "/", redirect: "/dashboard/analysis" },
@@ -30,6 +33,8 @@ export default [
         path: "/dashboard",
         name: "dashboard",
         icon: "dashboard",
+        Routes: ["src/pages/Authorized"],
+        authority: ["admin", "user"],
         routes: [
           {
             path: "/dashboard/analysis",
@@ -274,10 +279,11 @@ export default [
         path: "/accesslog",
         icon: "eye",
         name: "accesslog",
+        Routes: ["src/pages/Authorized"],
+        authority: ["admin"],
         component: "./AccessLog/LogList"
-			},
-			
-			
+      },
+
       {
         component: "404"
       }

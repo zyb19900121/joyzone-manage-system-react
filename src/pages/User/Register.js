@@ -3,7 +3,17 @@ import { connect } from "dva";
 import { formatMessage, FormattedMessage } from "umi/locale";
 import Link from "umi/link";
 import router from "umi/router";
-import { Form, Input, Button, Select, Row, Col, Popover, Progress, Alert } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Select,
+  Row,
+  Col,
+  Popover,
+  Progress,
+  Alert
+} from "antd";
 import styles from "./Register.less";
 
 const FormItem = Form.Item;
@@ -109,6 +119,7 @@ class Register extends Component {
     e.preventDefault();
     const { form, dispatch } = this.props;
     form.validateFields({ force: true }, (err, values) => {
+			console.log('values: ', values);
       if (!err) {
         const { prefix } = this.state;
         dispatch({
@@ -148,6 +159,24 @@ class Register extends Component {
       callback: response => {
         if (response.isExist) {
           callback("该邮箱已被注册！");
+        } else {
+          callback();
+        }
+      }
+    });
+  };
+
+  checkMobileExist = (rule, value, callback) => {
+    const { dispatch, form, register } = this.props;
+    dispatch({
+      type: "register/checkMobileExist",
+      payload: {
+        mobile: value,
+        type: "register"
+      },
+      callback: response => {
+        if (response.isExist) {
+          callback("该手机号已被注册！");
         } else {
           callback();
         }
@@ -307,6 +336,32 @@ class Register extends Component {
             )}
           </FormItem>
           <FormItem>
+            {getFieldDecorator("nickname", {
+              rules: [
+                {
+                  required: true,
+                  message: formatMessage({
+                    id: "validation.nickname.required"
+                  })
+                },
+                {
+                  max: 6,
+                  message: formatMessage({
+                    id: "validation.nickname.wrong-format"
+                  })
+                }
+              ]
+            })(
+              <Input
+                size="large"
+                type="password"
+                placeholder={formatMessage({
+                  id: "form.nickname.placeholder"
+                })}
+              />
+            )}
+          </FormItem>
+          <FormItem>
             <InputGroup compact>
               <Select
                 size="large"
@@ -330,6 +385,9 @@ class Register extends Component {
                     message: formatMessage({
                       id: "validation.phone-number.wrong-format"
                     })
+                  },
+                  {
+                    validator: this.checkMobileExist
                   }
                 ]
               })(

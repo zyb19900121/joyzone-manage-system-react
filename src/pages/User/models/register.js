@@ -1,4 +1,9 @@
-import { getCaptcha, register, checkExist } from "@/services/api";
+import {
+  getCaptcha,
+  register,
+  checkExist,
+  checkMobileExist
+} from "@/services/api";
 import { setAuthority } from "@/utils/authority";
 import { reloadAuthorized } from "@/utils/Authorized";
 
@@ -21,10 +26,18 @@ export default {
     *checkExist({ payload, callback }, { call, put }) {
       const response = yield call(checkExist, payload);
       if (callback) callback(response);
-      yield put({
-        type: "checkExistHandle",
-        payload: response
-      });
+      // yield put({
+      //   type: "checkExistHandle",
+      //   payload: response
+      // });
+    },
+    *checkMobileExist({ payload, callback }, { call, put }) {
+      const response = yield call(checkMobileExist, payload);
+      if (callback) callback(response);
+      // yield put({
+      //   type: "checkMobileExistHandle",
+      //   payload: response
+      // });
     },
     *submit({ payload }, { call, put }) {
       // const response = yield call(fakeRegister, payload);
@@ -39,19 +52,25 @@ export default {
   reducers: {
     registerHandle(state, { payload }) {
       setAuthority("user");
-      // reloadAuthorized();
+      reloadAuthorized();
       return {
         ...state,
         submitMsg: payload.msg,
         submit: payload.code == "200" ? "ok" : "error",
         status: payload.code == "200" ? "ok" : "error"
       };
-    },
-    checkExistHandle(state, { payload }) {
-      return {
-        ...state,
-        isExist: payload.isExist
-      };
     }
+    // checkExistHandle(state, { payload }) {
+    //   return {
+    //     ...state,
+    //     isExist: payload.isExist
+    //   };
+    // },
+    // checkMobileExistHandle(state, { payload }) {
+    //   return {
+    //     ...state,
+    //     isExist: payload.isExist
+    //   };
+    // }
   }
 };

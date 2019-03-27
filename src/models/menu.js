@@ -1,8 +1,8 @@
-import memoizeOne from 'memoize-one';
-import isEqual from 'lodash/isEqual';
-import { formatMessage } from 'umi/locale';
-import Authorized from '@/utils/Authorized';
-import { menu } from '../defaultSettings';
+import memoizeOne from "memoize-one";
+import isEqual from "lodash/isEqual";
+import { formatMessage } from "umi/locale";
+import Authorized from "@/utils/Authorized";
+import { menu } from "../defaultSettings";
 
 const { check } = Authorized;
 
@@ -14,7 +14,7 @@ function formatter(data, parentAuthority, parentName) {
         return null;
       }
 
-      let locale = 'menu';
+      let locale = "menu";
       if (parentName) {
         locale = `${parentName}.${item.name}`;
       } else {
@@ -29,7 +29,7 @@ function formatter(data, parentAuthority, parentName) {
         ...item,
         name,
         locale,
-        authority: item.authority || parentAuthority,
+        authority: item.authority || parentAuthority
       };
       if (item.routes) {
         const children = formatter(item.routes, item.authority, locale);
@@ -49,10 +49,14 @@ const memoizeOneFormatter = memoizeOne(formatter, isEqual);
  */
 const getSubMenu = item => {
   // doc: add hideChildrenInMenu
-  if (item.children && !item.hideChildrenInMenu && item.children.some(child => child.name)) {
+  if (
+    item.children &&
+    !item.hideChildrenInMenu &&
+    item.children.some(child => child.name)
+  ) {
     return {
       ...item,
-      children: filterMenuData(item.children), // eslint-disable-line
+      children: filterMenuData(item.children) // eslint-disable-line
     };
   }
   return item;
@@ -90,15 +94,18 @@ const getBreadcrumbNameMap = menuData => {
   return routerMap;
 };
 
-const memoizeOneGetBreadcrumbNameMap = memoizeOne(getBreadcrumbNameMap, isEqual);
+const memoizeOneGetBreadcrumbNameMap = memoizeOne(
+  getBreadcrumbNameMap,
+  isEqual
+);
 
 export default {
-  namespace: 'menu',
+  namespace: "menu",
 
   state: {
     menuData: [],
     routerData: [],
-    breadcrumbNameMap: {},
+    breadcrumbNameMap: {}
   },
 
   effects: {
@@ -106,20 +113,22 @@ export default {
       const { routes, authority } = payload;
       const originalMenuData = memoizeOneFormatter(routes, authority);
       const menuData = filterMenuData(originalMenuData);
-      const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(originalMenuData);
+      const breadcrumbNameMap = memoizeOneGetBreadcrumbNameMap(
+        originalMenuData
+      );
       yield put({
-        type: 'save',
-        payload: { menuData, breadcrumbNameMap, routerData: routes },
+        type: "save",
+        payload: { menuData, breadcrumbNameMap, routerData: routes }
       });
-    },
+    }
   },
 
   reducers: {
     save(state, action) {
       return {
         ...state,
-        ...action.payload,
+        ...action.payload
       };
-    },
-  },
+    }
+  }
 };
