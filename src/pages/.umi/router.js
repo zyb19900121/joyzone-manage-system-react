@@ -640,7 +640,10 @@ models: () => [
           "admin"
         ],
         "component": _dvaDynamic({
-  
+  app: window.g_app,
+models: () => [
+  import(/* webpackChunkName: 'p__Comment__models__comment.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Comment/models/comment.js').then(m => { return { namespace: 'comment',...m.default}})
+],
   component: () => import(/* webpackChunkName: "p__Comment__Comment" */'../Comment/Comment'),
   LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
 }),

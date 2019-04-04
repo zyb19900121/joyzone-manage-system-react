@@ -13,7 +13,7 @@ import {
   Menu,
   DatePicker,
   Modal,
-  message,
+  message
 } from "antd";
 const { MonthPicker, RangePicker } = DatePicker;
 import StandardTable from "@/components/StandardTable";
@@ -237,6 +237,7 @@ class LogList extends PureComponent {
       logList: { data },
       loading
     } = this.props;
+
     const {
       selectedRows,
       modalVisible,

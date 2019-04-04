@@ -56,7 +56,7 @@ export async function register(params) {
   });
 }
 
-//用户注册
+//用户登陆
 export async function login(params) {
   return request(`${baseUrl}/loginForReact`, {
     method: "POST",
@@ -65,6 +65,11 @@ export async function login(params) {
       method: "post"
     }
   });
+}
+
+//查询评论列表
+export async function queryCommentList(params) {
+  return request(`${baseUrl}/manage/gameCommentReact?${stringify(params)}`);
 }
 
 //查询访问日志
