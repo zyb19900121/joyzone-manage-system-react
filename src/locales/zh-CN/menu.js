@@ -40,5 +40,6 @@ export default {
   "menu.account.logout": "退出登录",
 
   //新增代码
-  "menu.accesslog": "访问日志"
+  "menu.accesslog": "访问日志",
+  "menu.comment": "评论管理"
 };

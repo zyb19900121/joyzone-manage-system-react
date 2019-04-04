@@ -632,6 +632,21 @@ models: () => [
         ]
       },
       {
+        "path": "/comment",
+        "icon": "message",
+        "name": "comment",
+        "Routes": [require('../Authorized').default],
+        "authority": [
+          "admin"
+        ],
+        "component": _dvaDynamic({
+  
+  component: () => import(/* webpackChunkName: "p__Comment__Comment" */'../Comment/Comment'),
+  LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
+}),
+        "exact": true
+      },
+      {
         "path": "/accesslog",
         "icon": "eye",
         "name": "accesslog",

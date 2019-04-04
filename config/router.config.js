@@ -2,8 +2,8 @@ export default [
   // user
   {
     path: "/user",
-		component: "../layouts/UserLayout",
-		Routes: ["src/pages/Authorized"],
+    component: "../layouts/UserLayout",
+    Routes: ["src/pages/Authorized"],
     authority: ["admin", "user"],
     routes: [
       { path: "/user", redirect: "/user/login" },
@@ -275,6 +275,14 @@ export default [
       },
 
       //新增代码
+      {
+        path: "/comment",
+        icon: "message",
+        name: "comment",
+        Routes: ["src/pages/Authorized"],
+        authority: ["admin"],
+        component: "./Comment/Comment"
+      },
       {
         path: "/accesslog",
         icon: "eye",
