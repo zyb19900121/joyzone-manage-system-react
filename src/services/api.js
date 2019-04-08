@@ -72,6 +72,17 @@ export async function queryCommentList(params) {
   return request(`${baseUrl}/manage/gameCommentReact?${stringify(params)}`);
 }
 
+//删除评论
+export async function removeComment(params) {
+  return request(`${baseUrl}/manage/gameCommentReact/${restFormat(params)}`, {
+    method: "DELETE",
+    body: {
+      // ...params,
+      // method: 'delete',
+    }
+  });
+}
+
 //查询访问日志
 export async function queryLogList(params) {
   return request(`${baseUrl}/manage/log?${stringify(params)}`);
@@ -80,7 +91,7 @@ export async function queryLogList(params) {
 //删除访问日志
 export async function removeLogRecords(params) {
   // return request(`${baseUrl}/api/log?${stringify(params)}`)
-  return request(`${baseUrl}/api/log/${restFormat(params)}`, {
+  return request(`${baseUrl}/manage/log/${restFormat(params)}`, {
     method: "DELETE",
     body: {
       // ...params,

@@ -7,10 +7,8 @@ import {
   Col,
   Card,
   Form,
-  Input,
   Icon,
   Button,
-  Menu,
   DatePicker,
   Modal,
   message,
@@ -58,7 +56,7 @@ class Comment extends PureComponent {
     },
     {
       title: "操作",
-      render: record => (
+      render: item => (
         <Fragment>
           <a onClick={() => this.handleDelete(item.id)}>删除</a>
         </Fragment>
@@ -68,7 +66,7 @@ class Comment extends PureComponent {
 
   initialParams = {
     pageSize: 10,
-    currentPage: 1
+    current: 1
   };
 
   componentDidMount() {
@@ -78,6 +76,43 @@ class Comment extends PureComponent {
       payload: this.initialParams
     });
   }
+
+  handleTableChange = (pagination, filters, sorter) => {
+    const { dispatch } = this.props;
+    const params = {
+      pageSize: pagination.pageSize,
+      current: pagination.current
+    };
+    dispatch({
+      type: "comment/fetch",
+      payload: params
+    });
+  };
+
+  handleDelete = id => {
+    const { dispatch } = this.props;
+    Modal.confirm({
+      title: "删除记录",
+      content: "确定删除该评论吗？",
+      okText: "确认",
+      cancelText: "取消",
+      onOk: () => {
+        dispatch({
+          type: "comment/remove",
+          payload: {
+            pagination: this.props.comment.data.pagination,
+            id: id
+          },
+          callback: () => {
+            message.success("删除成功");
+            this.setState({
+              selectedRows: []
+            });
+          }
+        });
+      }
+    });
+  };
 
   render() {
     const {
@@ -114,7 +149,7 @@ class Comment extends PureComponent {
               data={data}
               columns={this.columns}
               // // onSelectRow={this.handleSelectRows}
-              // onChange={this.handleStandardTableChange}
+              onChange={this.handleTableChange}
             />
           </div>
         </Card>

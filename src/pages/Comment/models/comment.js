@@ -1,4 +1,4 @@
-import { queryCommentList, removeLogRecords } from "@/services/api";
+import { queryCommentList, removeComment } from "@/services/api";
 
 export default {
   namespace: "comment",
@@ -19,25 +19,18 @@ export default {
       });
     },
     *remove({ payload, callback }, { call, put }) {
-      yield call(removeLogRecords, payload.id);
+      yield call(removeComment, payload.id);
 
-      let response = yield call(queryLogList, {
-        ...payload.pagination,
-        startDate: payload.startDate,
-        endDate: payload.endDate
+      let response = yield call(queryCommentList, {
+        ...payload.pagination
+        // startDate: payload.startDate,
+        // endDate: payload.endDate
       });
 
-      if (!response.list.length && payload.pagination.currentPage > 1) {
-        payload.pagination.currentPage--;
-        response = yield call(queryLogList, payload.pagination);
+      if (!response.list.length && payload.pagination.current > 1) {
+        payload.pagination.current--;
+        response = yield call(queryCommentList, payload.pagination);
       }
-      response.pagination = {
-        currentPage: payload.pagination.currentPage,
-        pageSize: payload.pagination.pageSize,
-        total: response.total
-      };
-      delete response.total;
-
       yield put({
         type: "save",
         payload: response
