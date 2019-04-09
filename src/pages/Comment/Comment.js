@@ -32,7 +32,6 @@ const FormItem = Form.Item;
 @Form.create()
 class Comment extends PureComponent {
   state = {
-    modalVisible: false,
     selectedRows: [],
     formValues: {}
   };

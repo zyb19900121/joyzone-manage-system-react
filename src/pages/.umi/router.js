@@ -640,7 +640,11 @@ models: () => [
             "path": "/config/gametype",
             "name": "gametype",
             "component": _dvaDynamic({
-  
+  app: window.g_app,
+models: () => [
+  import(/* webpackChunkName: 'p__Config__models__company.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Config/models/company.js').then(m => { return { namespace: 'company',...m.default}}),
+  import(/* webpackChunkName: 'p__Config__models__type.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Config/models/type.js').then(m => { return { namespace: 'type',...m.default}})
+],
   component: () => import(/* webpackChunkName: "p__Config__GameType" */'../Config/GameType'),
   LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
 }),
@@ -650,7 +654,11 @@ models: () => [
             "path": "/config/gamecompany",
             "name": "gamecompany",
             "component": _dvaDynamic({
-  
+  app: window.g_app,
+models: () => [
+  import(/* webpackChunkName: 'p__Config__models__company.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Config/models/company.js').then(m => { return { namespace: 'company',...m.default}}),
+  import(/* webpackChunkName: 'p__Config__models__type.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Config/models/type.js').then(m => { return { namespace: 'type',...m.default}})
+],
   component: () => import(/* webpackChunkName: "p__Config__GameCompany" */'../Config/GameCompany'),
   LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
 }),
