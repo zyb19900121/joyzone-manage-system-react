@@ -276,6 +276,24 @@ export default [
 
       //新增代码
       {
+        name: "config",
+        icon: "setting",
+        path: "/config",
+        routes: [
+          {
+            path: "/config/gametype",
+            name: "gametype",
+            component: "./Config/GameType"
+          },
+          {
+            path: "/config/gamecompany",
+            name: "gamecompany",
+            component: "./Config/GameCompany"
+          }
+        ]
+      },
+
+      {
         path: "/comment",
         icon: "message",
         name: "comment",

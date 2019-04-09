@@ -632,6 +632,36 @@ models: () => [
         ]
       },
       {
+        "name": "config",
+        "icon": "setting",
+        "path": "/config",
+        "routes": [
+          {
+            "path": "/config/gametype",
+            "name": "gametype",
+            "component": _dvaDynamic({
+  
+  component: () => import(/* webpackChunkName: "p__Config__GameType" */'../Config/GameType'),
+  LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
+}),
+            "exact": true
+          },
+          {
+            "path": "/config/gamecompany",
+            "name": "gamecompany",
+            "component": _dvaDynamic({
+  
+  component: () => import(/* webpackChunkName: "p__Config__GameCompany" */'../Config/GameCompany'),
+  LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
+}),
+            "exact": true
+          },
+          {
+            "component": () => React.createElement(require('/Users/zyb/work/joyzone-manage-system-react/node_modules/_umi-build-dev@1.6.1@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+          }
+        ]
+      },
+      {
         "path": "/comment",
         "icon": "message",
         "name": "comment",
