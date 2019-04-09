@@ -22,14 +22,20 @@ export default {
       yield call(removeComment, payload.id);
 
       let response = yield call(queryCommentList, {
-        ...payload.pagination
-        // startDate: payload.startDate,
-        // endDate: payload.endDate
+        ...payload.pagination,
+        startDate: payload.startDate,
+        endDate: payload.endDate,
+        gameId: payload.gameId
       });
 
       if (!response.list.length && payload.pagination.current > 1) {
         payload.pagination.current--;
-        response = yield call(queryCommentList, payload.pagination);
+        response = yield call(queryCommentList, {
+          ...payload.pagination,
+          startDate: payload.startDate,
+          endDate: payload.endDate,
+          gameId: payload.gameId
+        });
       }
       yield put({
         type: "save",

@@ -161,14 +161,14 @@ class LogList extends PureComponent {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
 
-      const rangeTimeValue = fieldsValue["range-time-picker"];
+      const rangeTimeValue = fieldsValue["range-time-picker"] || [];
 
       const values = {
         ...this.initialParams,
-        startDate: rangeTimeValue
+        startDate: rangeTimeValue.length
           ? rangeTimeValue[0].format("YYYY-MM-DD HH:mm:ss")
           : null,
-        endDate: rangeTimeValue
+        endDate: rangeTimeValue.length
           ? rangeTimeValue[1].format("YYYY-MM-DD HH:mm:ss")
           : null
       };
@@ -194,19 +194,28 @@ class LogList extends PureComponent {
     const {
       form: { getFieldDecorator }
     } = this.props;
-    const rangeConfig = {
-      rules: [
-        { type: "array", required: false, message: "Please select time!" }
-      ]
+
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 7 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 12 },
+        md: { span: 10 }
+      }
     };
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col xl={8} lg={24} md={24} sm={24}>
-            <Form.Item>
-              {getFieldDecorator("range-time-picker", rangeConfig)(
+        <Row>
+          <Col xl={8} lg={12} md={14} sm={24}>
+            <Form.Item label="访问时间" {...formItemLayout}>
+              {getFieldDecorator("range-time-picker")(
                 <RangePicker
+                  style={{ width: "100%" }}
                   onChange={dates => this.handleDatapickerChange(dates)}
+                  format="YYYY-MM-DD"
                   showTime={{
                     defaultValue: [
                       moment("00:00:00", "HH:mm:ss"),
@@ -217,6 +226,8 @@ class LogList extends PureComponent {
               )}
             </Form.Item>
           </Col>
+        </Row>
+        <Row>
           <Col xl={16} lg={24} md={24} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">

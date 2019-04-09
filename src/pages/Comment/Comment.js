@@ -12,7 +12,8 @@ import {
   DatePicker,
   Modal,
   message,
-  Avatar
+  Avatar,
+  Select
 } from "antd";
 const { MonthPicker, RangePicker } = DatePicker;
 import StandardTable from "@/components/StandardTable";
@@ -20,15 +21,20 @@ import PageHeaderWrapper from "@/components/PageHeaderWrapper";
 
 import styles from "./Comment.less";
 
-@connect(({ comment, loading }) => ({
+const { Option } = Select;
+const FormItem = Form.Item;
+
+@connect(({ comment, game, loading }) => ({
   comment,
+  game,
   loading: loading.models.comment
 }))
 @Form.create()
 class Comment extends PureComponent {
   state = {
     modalVisible: false,
-    selectedRows: []
+    selectedRows: [],
+    formValues: {}
   };
 
   columns = [
@@ -75,11 +81,147 @@ class Comment extends PureComponent {
       type: "comment/fetch",
       payload: this.initialParams
     });
+    dispatch({
+      type: "game/fetch",
+      payload: { isFilter: 1 }
+    });
+  }
+
+  handleDatapickerChange(dates) {
+    // if (!dates.length) {
+    //   this.handleFormReset();
+    // }
+  }
+
+  handleFormReset = () => {
+    const { form, dispatch } = this.props;
+    form.resetFields();
+    this.setState({
+      formValues: {}
+    });
+    dispatch({
+      type: "comment/fetch",
+      payload: this.initialParams
+    });
+  };
+
+  handleSearch = e => {
+    e.preventDefault();
+
+    const { dispatch, form } = this.props;
+
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+
+      const rangeTimeValue = fieldsValue["range-time-picker"] || [];
+      const gameId = fieldsValue["gameId"];
+
+      const values = {
+        ...this.initialParams,
+        startDate: rangeTimeValue.length
+          ? rangeTimeValue[0].format("YYYY-MM-DD HH:mm:ss")
+          : null,
+        endDate: rangeTimeValue.length
+          ? rangeTimeValue[1].format("YYYY-MM-DD HH:mm:ss")
+          : null,
+        gameId: gameId
+      };
+
+      this.setState({
+        formValues: values
+      });
+
+      dispatch({
+        type: "comment/fetch",
+        payload: values
+      });
+    });
+  };
+
+  renderSimpleForm() {
+    const {
+      form: { getFieldDecorator },
+      game: { data }
+    } = this.props;
+
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 7 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 12 },
+        md: { span: 10 }
+      }
+    };
+
+    const options = data.list.map(game => (
+      <Option key={game.id}>{game.game_name}</Option>
+    ));
+
+    return (
+      <Form onSubmit={this.handleSearch}>
+        <Row>
+          <Col xl={8} lg={12} md={24} sm={24}>
+            <FormItem label="游戏名称">
+              {getFieldDecorator("gameId")(
+                <Select
+                  showSearch
+                  allowClear={true}
+                  style={{ width: 200 }}
+                  placeholder="请选择一个游戏"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {options}
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col xl={8} lg={12} md={14} sm={24}>
+            <FormItem label="评论时间">
+              {getFieldDecorator("range-time-picker")(
+                <RangePicker
+                  style={{ width: "100%" }}
+                  onChange={dates => this.handleDatapickerChange(dates)}
+                  format="YYYY-MM-DD"
+                  showTime={{
+                    defaultValue: [
+                      moment("00:00:00", "HH:mm:ss"),
+                      moment("23:59:59", "HH:mm:ss")
+                    ]
+                  }}
+                />
+              )}
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+            <span className={styles.submitButtons}>
+              <Button type="primary" htmlType="submit">
+                查询
+              </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+                重置
+              </Button>
+            </span>
+          </Col>
+        </Row>
+      </Form>
+    );
   }
 
   handleTableChange = (pagination, filters, sorter) => {
     const { dispatch } = this.props;
+    const { formValues } = this.state;
     const params = {
+      ...formValues,
       pageSize: pagination.pageSize,
       current: pagination.current
     };
@@ -89,8 +231,15 @@ class Comment extends PureComponent {
     });
   };
 
+  handleSelectRows = rows => {
+    this.setState({
+      selectedRows: rows
+    });
+  };
+
   handleDelete = id => {
     const { dispatch } = this.props;
+    const { formValues } = this.state;
     Modal.confirm({
       title: "删除记录",
       content: "确定删除该评论吗？",
@@ -101,7 +250,12 @@ class Comment extends PureComponent {
           type: "comment/remove",
           payload: {
             pagination: this.props.comment.data.pagination,
-            id: id
+            id: id,
+            ...{
+              startDate: formValues.startDate,
+              endDate: formValues.endDate,
+              gameId: formValues.gameId
+            }
           },
           callback: () => {
             message.success("删除成功");
@@ -126,14 +280,14 @@ class Comment extends PureComponent {
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>
-              {/* {this.renderSimpleForm()} */}
+              {this.renderSimpleForm()}
             </div>
-            {/* <div className={styles.tableListOperator}>
+            <div className={styles.tableListOperator}>
               {selectedRows.length > 0 && (
                 <span>
                   <Button
                     onClick={() =>
-                      this.handleDeleteLogRecord(
+                      this.handleDelete(
                         this.state.selectedRows.map(item => item.id)
                       )
                     }
@@ -142,13 +296,13 @@ class Comment extends PureComponent {
                   </Button>
                 </span>
               )}
-            </div> */}
+            </div>
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
               data={data}
               columns={this.columns}
-              // // onSelectRow={this.handleSelectRows}
+              onSelectRow={this.handleSelectRows}
               onChange={this.handleTableChange}
             />
           </div>

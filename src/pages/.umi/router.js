@@ -642,7 +642,8 @@ models: () => [
         "component": _dvaDynamic({
   app: window.g_app,
 models: () => [
-  import(/* webpackChunkName: 'p__Comment__models__comment.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Comment/models/comment.js').then(m => { return { namespace: 'comment',...m.default}})
+  import(/* webpackChunkName: 'p__Comment__models__comment.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Comment/models/comment.js').then(m => { return { namespace: 'comment',...m.default}}),
+  import(/* webpackChunkName: 'p__Comment__models__game.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Comment/models/game.js').then(m => { return { namespace: 'game',...m.default}})
 ],
   component: () => import(/* webpackChunkName: "p__Comment__Comment" */'../Comment/Comment'),
   LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
