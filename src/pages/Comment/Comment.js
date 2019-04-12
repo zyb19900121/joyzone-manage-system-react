@@ -39,28 +39,34 @@ class Comment extends PureComponent {
   columns = [
     {
       title: "用户姓名",
-      dataIndex: "username"
+      dataIndex: "username",
+      align: "center"
     },
     {
       title: "用户头像",
       dataIndex: "user_avatar",
+      align: "center",
       render: val => <Avatar icon="user" src={val} />
     },
     {
       title: "游戏名称",
-      dataIndex: "game_name"
+      dataIndex: "game_name",
+      align: "center"
     },
     {
       title: "评论内容",
-      dataIndex: "comment_content"
+      dataIndex: "comment_content",
+      align: "center"
     },
     {
       title: "评论时间",
       dataIndex: "create_date",
+      align: "center",
       render: val => <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>
     },
     {
-      title: "操作",
+			title: "操作",
+			align: "center",
       render: item => (
         <Fragment>
           <a onClick={() => this.handleDelete(item.id)}>删除</a>
@@ -154,10 +160,12 @@ class Comment extends PureComponent {
         md: { span: 10 }
       }
     };
-
-    const options = data.list.map(game => (
-      <Option key={game.id}>{game.game_name}</Option>
-    ));
+    let options = [];
+    if (data && data.list) {
+      options = data.list.map(game => (
+        <Option key={game.id}>{game.game_name}</Option>
+      ));
+    }
 
     return (
       <Form onSubmit={this.handleSearch}>

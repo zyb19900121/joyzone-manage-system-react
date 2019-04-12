@@ -45,23 +45,28 @@ class LogList extends PureComponent {
   columns = [
     {
       title: "手机品牌",
-      dataIndex: "phone_brand"
+      dataIndex: "phone_brand",
+      align: "center"
     },
     {
       title: "手机型号",
-      dataIndex: "phone_model"
+      dataIndex: "phone_model",
+      align: "center"
     },
     {
       title: "手机系统",
-      dataIndex: "phone_system"
+      dataIndex: "phone_system",
+      align: "center"
     },
     {
       title: "访问时间",
       dataIndex: "visit_date",
+      align: "center",
       render: val => <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>
     },
     {
       title: "操作",
+      align: "center",
       render: record => (
         <Fragment>
           <a onClick={() => this.handleDeleteLogRecord(record.id)}>删除</a>

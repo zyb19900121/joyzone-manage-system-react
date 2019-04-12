@@ -1,4 +1,4 @@
-import { queryGameList } from "@/services/game";
+import { queryCompanyList, removeCompany } from "@/services/config";
 
 export default {
   namespace: "company",
@@ -11,11 +11,30 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryGameList, payload);
+      const response = yield call(queryCompanyList, payload);
       yield put({
         type: "save",
         payload: response
       });
+    },
+    *remove({ payload, callback }, { call, put }) {
+      yield call(removeCompany, payload.id);
+
+      let response = yield call(queryCompanyList, {
+        ...payload.pagination
+      });
+
+      if (!response.list.length && payload.pagination.current > 1) {
+        payload.pagination.current--;
+        response = yield call(queryCompanyList, {
+          ...payload.pagination
+        });
+      }
+      yield put({
+        type: "save",
+        payload: response
+      });
+      if (callback) callback();
     }
   },
 

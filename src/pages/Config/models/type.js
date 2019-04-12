@@ -1,4 +1,4 @@
-import { queryGameList } from "@/services/game";
+import { queryTypeList, removeType } from "@/services/config";
 
 export default {
   namespace: "type",
@@ -11,11 +11,31 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryGameList, payload);
+      const response = yield call(queryTypeList, payload);
       yield put({
         type: "save",
         payload: response
       });
+    },
+
+    *remove({ payload, callback }, { call, put }) {
+      yield call(removeType, payload.id);
+
+      let response = yield call(queryTypeList, {
+        ...payload.pagination
+      });
+
+      if (!response.list.length && payload.pagination.current > 1) {
+        payload.pagination.current--;
+        response = yield call(queryTypeList, {
+          ...payload.pagination
+        });
+      }
+      yield put({
+        type: "save",
+        payload: response
+      });
+      if (callback) callback();
     }
   },
 

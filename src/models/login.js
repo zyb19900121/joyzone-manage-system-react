@@ -39,6 +39,7 @@ export default {
             return;
           }
         }
+
         yield put(routerRedux.replace(redirect || "/"));
       }
     },
@@ -61,7 +62,7 @@ export default {
         routerRedux.replace({
           pathname: "/user/login",
           search: stringify({
-            redirect: window.location.href
+            // redirect: window.location.href
           })
         })
       );
