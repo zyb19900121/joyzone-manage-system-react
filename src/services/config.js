@@ -27,3 +27,10 @@ export async function removeCompany(params) {
     body: {}
   });
 }
+
+export async function addCompany(params) {
+  return request(`${baseUrl}/manage/gameCompanyReact`, {
+    method: "POST",
+    body: params
+  });
+}

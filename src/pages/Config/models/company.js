@@ -1,4 +1,4 @@
-import { queryCompanyList, removeCompany } from "@/services/config";
+import { queryCompanyList, removeCompany, addCompany } from "@/services/config";
 
 export default {
   namespace: "company",
@@ -30,6 +30,18 @@ export default {
           ...payload.pagination
         });
       }
+      yield put({
+        type: "save",
+        payload: response
+      });
+      if (callback) callback();
+    },
+    *add({ payload, callback }, { call, put }) {
+			yield call(addCompany, payload.company);
+			
+      let response = yield call(queryCompanyList, {
+        ...payload.pagination
+      });
       yield put({
         type: "save",
         payload: response

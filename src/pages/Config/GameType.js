@@ -7,6 +7,7 @@ import {
   Col,
   Card,
   Form,
+  Input,
   Icon,
   Button,
   Modal,
@@ -19,6 +20,66 @@ import StandardTable from "@/components/StandardTable";
 import PageHeaderWrapper from "@/components/PageHeaderWrapper";
 
 import styles from "./Config.less";
+
+const FormItem = Form.Item;
+const { TextArea } = Input;
+
+const CreateForm = Form.create()(props => {
+  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+  const okHandle = () => {
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      handleAdd(fieldsValue);
+    });
+  };
+  return (
+    <Modal
+      destroyOnClose
+      title="添加类型"
+      visible={modalVisible}
+      onOk={okHandle}
+      onCancel={() => handleModalVisible()}
+    >
+      <Form layout="vertical">
+        <FormItem label="类型名称（中文）">
+          {form.getFieldDecorator("type_name_cn", {
+            rules: [
+              {
+                message: "不得超过三十二个字符！",
+                max: 32
+              }
+            ]
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem label="类型名称（英文）">
+          {form.getFieldDecorator("type_name_en", {
+            rules: [
+              {
+                required: true,
+                message: "请输入公司名称（英文）！"
+              },
+              {
+                message: "不得超过32个字符！",
+                max: 32
+              }
+            ]
+          })(<Input placeholder="请输入" />)}
+        </FormItem>
+        <FormItem label="类型简介">
+          {form.getFieldDecorator("type_desc", {
+            rules: [
+              {
+                message: "不得超过300个字符！",
+                max: 300
+              }
+            ]
+          })(<TextArea rows={4} placeholder="请输入" />)}
+        </FormItem>
+      </Form>
+    </Modal>
+  );
+});
 
 @connect(({ type, loading }) => ({
   type,
@@ -52,6 +113,8 @@ class GameType extends PureComponent {
     },
     {
       title: "操作",
+      align: "center",
+      width: 120,
       render: item => (
         <Fragment>
           <a onClick={() => this.handleDelete(item.id)}>编辑</a>
@@ -118,20 +181,39 @@ class GameType extends PureComponent {
     });
   };
 
+  handleModalVisible = flag => {
+    this.setState({
+      modalVisible: !!flag
+    });
+  };
+
+  handleAdd = fieldsValue => {};
+
   render() {
     const {
       type: { data },
       loading
     } = this.props;
 
-    const { selectedRows } = this.state;
+    const { selectedRows, modalVisible } = this.state;
+
+    const parentMethods = {
+      handleAdd: this.handleAdd,
+      handleModalVisible: this.handleModalVisible
+    };
 
     return (
       <PageHeaderWrapper title="游戏类型管理">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>
-              {/* {this.renderSimpleForm()} */}
+              <Button
+                icon="plus"
+                type="primary"
+                onClick={() => this.handleModalVisible(true)}
+              >
+                添加类型
+              </Button>
             </div>
             <div className={styles.tableListOperator}>
               {selectedRows.length > 0 && (
@@ -158,6 +240,7 @@ class GameType extends PureComponent {
             />
           </div>
         </Card>
+        <CreateForm {...parentMethods} modalVisible={modalVisible} />
       </PageHeaderWrapper>
     );
   }
