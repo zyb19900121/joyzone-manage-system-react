@@ -8,6 +8,7 @@ import {
   Card,
   Form,
   Input,
+  InputNumber,
   Icon,
   Button,
   Modal,
@@ -25,18 +26,27 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+  const {
+    modalVisible,
+    form,
+    handleAdd,
+    handleUpdate,
+    handleModalVisible,
+    currentType
+  } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      handleAdd(fieldsValue);
+      currentType
+        ? handleUpdate({ id: currentType.id, ...fieldsValue })
+        : handleAdd(fieldsValue);
     });
   };
   return (
     <Modal
       destroyOnClose
-      title="添加类型"
+      title={currentType ? "编辑类型" : "添加类型"}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -49,7 +59,8 @@ const CreateForm = Form.create()(props => {
                 message: "不得超过三十二个字符！",
                 max: 32
               }
-            ]
+            ],
+            initialValue: currentType ? currentType.type_name_cn : ""
           })(<Input placeholder="请输入" />)}
         </FormItem>
         <FormItem label="类型名称（英文）">
@@ -63,7 +74,8 @@ const CreateForm = Form.create()(props => {
                 message: "不得超过32个字符！",
                 max: 32
               }
-            ]
+            ],
+            initialValue: currentType ? currentType.type_name_en : ""
           })(<Input placeholder="请输入" />)}
         </FormItem>
         <FormItem label="类型简介">
@@ -73,8 +85,14 @@ const CreateForm = Form.create()(props => {
                 message: "不得超过300个字符！",
                 max: 300
               }
-            ]
+            ],
+            initialValue: currentType ? currentType.type_desc : ""
           })(<TextArea rows={4} placeholder="请输入" />)}
+        </FormItem>
+        <FormItem label="排序">
+          {form.getFieldDecorator("order", {
+            initialValue: currentType ? currentType.order : "1"
+          })(<InputNumber min={1} max={10} />)}
         </FormItem>
       </Form>
     </Modal>
@@ -87,7 +105,9 @@ const CreateForm = Form.create()(props => {
 }))
 class GameType extends PureComponent {
   state = {
-    selectedRows: []
+    selectedRows: [],
+    modalVisible: false,
+    currentType: undefined
   };
 
   columns = [
@@ -102,22 +122,27 @@ class GameType extends PureComponent {
       align: "center"
     },
     {
-      title: "类型简介",
-      dataIndex: "type_desc",
-      align: "center",
-      render: val => (
-        <Ellipsis length={30} tooltip>
-          {val}
-        </Ellipsis>
-      )
+      title: "排序",
+      dataIndex: "order",
+      align: "center"
     },
+    // {
+    //   title: "类型简介",
+    //   dataIndex: "type_desc",
+    //   align: "center",
+    //   render: val => (
+    //     <Ellipsis length={30} tooltip>
+    //       {val}
+    //     </Ellipsis>
+    //   )
+    // },
     {
       title: "操作",
       align: "center",
       width: 120,
       render: item => (
         <Fragment>
-          <a onClick={() => this.handleDelete(item.id)}>编辑</a>
+          <a onClick={() => this.handleEdit(item.id)}>编辑</a>
           <Divider type="vertical" />
           <a onClick={() => this.handleDelete(item.id)}>删除</a>
         </Fragment>
@@ -182,12 +207,60 @@ class GameType extends PureComponent {
   };
 
   handleModalVisible = flag => {
+    !flag &&
+      this.setState({
+        currentType: undefined
+      });
     this.setState({
       modalVisible: !!flag
     });
   };
 
-  handleAdd = fieldsValue => {};
+  handleAdd = fieldsValue => {
+    this.handleModalVisible();
+    const { dispatch } = this.props;
+    dispatch({
+      type: "type/add",
+      payload: {
+        type: fieldsValue,
+        pagination: this.props.type.data.pagination
+      },
+      callback: () => {
+        message.success("添加成功");
+      }
+    });
+  };
+
+  handleUpdate = fieldsValue => {
+    this.handleModalVisible();
+    const { dispatch } = this.props;
+    dispatch({
+      type: "type/update",
+      payload: {
+        type: fieldsValue,
+        pagination: this.props.type.data.pagination
+      },
+      callback: () => {
+        message.success("修改成功");
+      }
+    });
+  };
+
+  handleEdit = id => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: "type/select",
+      payload: {
+        id: id
+      },
+      callback: type => {
+        this.setState({
+          currentType: type
+        });
+        this.handleModalVisible(true);
+      }
+    });
+  };
 
   render() {
     const {
@@ -195,11 +268,12 @@ class GameType extends PureComponent {
       loading
     } = this.props;
 
-    const { selectedRows, modalVisible } = this.state;
+    const { selectedRows, modalVisible, currentType } = this.state;
 
     const parentMethods = {
       handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible
+      handleModalVisible: this.handleModalVisible,
+      handleUpdate: this.handleUpdate
     };
 
     return (
@@ -237,10 +311,17 @@ class GameType extends PureComponent {
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleTableChange}
+              expandedRowRender={type => (
+                <p style={{ margin: 0 }}>{type.type_desc}</p>
+              )}
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
+        <CreateForm
+          {...parentMethods}
+          modalVisible={modalVisible}
+          currentType={currentType}
+        />
       </PageHeaderWrapper>
     );
   }

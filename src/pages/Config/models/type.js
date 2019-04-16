@@ -1,4 +1,10 @@
-import { queryTypeList, removeType } from "@/services/config";
+import {
+  queryTypeList,
+  removeType,
+  addType,
+  selectType,
+  updateType
+} from "@/services/config";
 
 export default {
   namespace: "type",
@@ -16,6 +22,37 @@ export default {
         type: "save",
         payload: response
       });
+    },
+
+    *add({ payload, callback }, { call, put }) {
+      yield call(addType, payload.type);
+
+      let response = yield call(queryTypeList, {
+        ...payload.pagination
+      });
+      yield put({
+        type: "save",
+        payload: response
+      });
+      if (callback) callback();
+    },
+
+    *update({ payload, callback }, { call, put }) {
+      yield call(updateType, payload.type);
+
+      let response = yield call(queryTypeList, {
+        ...payload.pagination
+      });
+      yield put({
+        type: "save",
+        payload: response
+      });
+      if (callback) callback();
+    },
+
+    *select({ payload, callback }, { call, put }) {
+      const response = yield call(selectType, payload.id);
+      if (callback) callback(response);
     },
 
     *remove({ payload, callback }, { call, put }) {

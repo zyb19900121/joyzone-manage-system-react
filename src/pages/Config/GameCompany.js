@@ -13,7 +13,8 @@ import {
   message,
   Select,
   Divider,
-  Input
+  Input,
+  InputNumber
 } from "antd";
 import Ellipsis from "@/components/Ellipsis";
 import StandardTable from "@/components/StandardTable";
@@ -88,6 +89,11 @@ const CreateForm = Form.create()(props => {
             initialValue: currentCompany ? currentCompany.company_desc : ""
           })(<TextArea rows={4} placeholder="请输入" />)}
         </FormItem>
+        <FormItem label="排序">
+          {form.getFieldDecorator("order", {
+            initialValue: currentCompany ? currentCompany.order : "1"
+          })(<InputNumber min={1} max={10} />)}
+        </FormItem>
       </Form>
     </Modal>
   );
@@ -121,15 +127,20 @@ class GameCompany extends PureComponent {
       align: "center"
     },
     {
-      title: "公司简介",
-      dataIndex: "company_desc",
-      align: "center",
-      render: val => (
-        <Ellipsis length={30} tooltip>
-          {val}
-        </Ellipsis>
-      )
+      title: "排序",
+      dataIndex: "order",
+      align: "center"
     },
+    // {
+    //   title: "公司简介",
+    //   dataIndex: "company_desc",
+    //   align: "center",
+    //   render: val => (
+    //     <Ellipsis length={30} tooltip>
+    //       {val}
+    //     </Ellipsis>
+    //   )
+    // },
     {
       title: "操作",
       align: "center",
@@ -223,8 +234,8 @@ class GameCompany extends PureComponent {
   };
 
   handleAdd = fieldsValue => {
-    const { dispatch } = this.props;
     this.handleModalVisible();
+    const { dispatch } = this.props;
     dispatch({
       type: "company/add",
       payload: {
@@ -238,8 +249,8 @@ class GameCompany extends PureComponent {
   };
 
   handleUpdate = company => {
-    const { dispatch } = this.props;
     this.handleModalVisible();
+    const { dispatch } = this.props;
     dispatch({
       type: "company/update",
       payload: {
@@ -301,6 +312,9 @@ class GameCompany extends PureComponent {
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleTableChange}
+              expandedRowRender={company => (
+                <p style={{ margin: 0 }}>{company.company_desc}</p>
+              )}
             />
           </div>
         </Card>
