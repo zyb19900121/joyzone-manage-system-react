@@ -25,18 +25,27 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+  const {
+    modalVisible,
+    form,
+    handleAdd,
+    handleUpdate,
+    handleModalVisible,
+    currentCompany
+  } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       // form.resetFields();
-      handleAdd(fieldsValue);
+      currentCompany
+        ? handleUpdate({ id: currentCompany.id, ...fieldsValue })
+        : handleAdd(fieldsValue);
     });
   };
   return (
     <Modal
       destroyOnClose
-      title="添加公司"
+      title={currentCompany ? "编辑公司" : "添加公司"}
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -49,7 +58,8 @@ const CreateForm = Form.create()(props => {
                 message: "不得超过三十二个字符！",
                 max: 32
               }
-            ]
+            ],
+            initialValue: currentCompany ? currentCompany.company_name_cn : ""
           })(<Input placeholder="请输入" />)}
         </FormItem>
         <FormItem label="公司名称（英文）">
@@ -63,7 +73,8 @@ const CreateForm = Form.create()(props => {
                 message: "不得超过32个字符！",
                 max: 32
               }
-            ]
+            ],
+            initialValue: currentCompany ? currentCompany.company_name_en : ""
           })(<Input placeholder="请输入" />)}
         </FormItem>
         <FormItem label="公司简介">
@@ -73,7 +84,8 @@ const CreateForm = Form.create()(props => {
                 message: "不得超过300个字符！",
                 max: 300
               }
-            ]
+            ],
+            initialValue: currentCompany ? currentCompany.company_desc : ""
           })(<TextArea rows={4} placeholder="请输入" />)}
         </FormItem>
       </Form>
@@ -88,7 +100,8 @@ const CreateForm = Form.create()(props => {
 class GameCompany extends PureComponent {
   state = {
     selectedRows: [],
-    modalVisible: false
+    modalVisible: false,
+    currentCompany: undefined
   };
 
   initialParams = {
@@ -123,7 +136,7 @@ class GameCompany extends PureComponent {
       width: 120,
       render: item => (
         <Fragment>
-          <a onClick={() => this.handleDelete(item.id)}>编辑</a>
+          <a onClick={() => this.handleEdit(item.id)}>编辑</a>
           <Divider type="vertical" />
           <a onClick={() => this.handleDelete(item.id)}>删除</a>
         </Fragment>
@@ -182,7 +195,28 @@ class GameCompany extends PureComponent {
     });
   };
 
+  handleEdit = id => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: "company/select",
+      payload: {
+        id: id
+      },
+      callback: company => {
+        this.setState({
+          currentCompany: company
+        });
+        this.handleModalVisible(true);
+      }
+    });
+  };
+
   handleModalVisible = flag => {
+    !flag &&
+      this.setState({
+        currentCompany: undefined
+      });
     this.setState({
       modalVisible: !!flag
     });
@@ -203,16 +237,32 @@ class GameCompany extends PureComponent {
     });
   };
 
+  handleUpdate = company => {
+    const { dispatch } = this.props;
+    this.handleModalVisible();
+    dispatch({
+      type: "company/update",
+      payload: {
+        company: company,
+        pagination: this.props.company.data.pagination
+      },
+      callback: () => {
+        message.success("修改成功");
+      }
+    });
+  };
+
   render() {
     const {
       company: { data },
       loading
     } = this.props;
 
-    const { selectedRows, modalVisible } = this.state;
+    const { selectedRows, modalVisible, currentCompany } = this.state;
 
     const parentMethods = {
       handleAdd: this.handleAdd,
+      handleUpdate: this.handleUpdate,
       handleModalVisible: this.handleModalVisible
     };
 
@@ -254,7 +304,11 @@ class GameCompany extends PureComponent {
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
+        <CreateForm
+          {...parentMethods}
+          modalVisible={modalVisible}
+          currentCompany={currentCompany}
+        />
       </PageHeaderWrapper>
     );
   }

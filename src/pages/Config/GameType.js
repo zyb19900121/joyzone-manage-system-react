@@ -215,7 +215,7 @@ class GameType extends PureComponent {
                 添加类型
               </Button>
             </div>
-            <div className={styles.tableListOperator}>
+            <div className={styles.tableListOperator} style={{ marginTop: 10 }}>
               {selectedRows.length > 0 && (
                 <span>
                   <Button

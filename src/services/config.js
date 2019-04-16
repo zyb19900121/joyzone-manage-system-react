@@ -4,7 +4,7 @@ import request from "@/utils/request";
 
 const baseUrl = "http://127.0.0.1:3000";
 
-//查询游戏类型
+//查询游戏类型列表
 export async function queryTypeList(params) {
   return request(`${baseUrl}/manage/gameTypeReact?${stringify(params)}`);
 }
@@ -16,7 +16,7 @@ export async function removeType(params) {
   });
 }
 
-//查询游戏公司
+//查询游戏公司列表
 export async function queryCompanyList(params) {
   return request(`${baseUrl}/manage/gameCompanyReact?${stringify(params)}`);
 }
@@ -33,4 +33,17 @@ export async function addCompany(params) {
     method: "POST",
     body: params
   });
+}
+
+export async function updateCompany(params) {
+  const id = params.id;
+  delete params.id;
+  return request(`${baseUrl}/manage/gameCompanyReact/${id}`, {
+    method: "PUT",
+    body: params
+  });
+}
+//根据查询游戏公司
+export async function selectCompany(params) {
+  return request(`${baseUrl}/manage/gameCompanyReact/${restFormat(params)}`);
 }

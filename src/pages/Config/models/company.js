@@ -1,4 +1,10 @@
-import { queryCompanyList, removeCompany, addCompany } from "@/services/config";
+import {
+  queryCompanyList,
+  removeCompany,
+  addCompany,
+  updateCompany,
+  selectCompany
+} from "@/services/config";
 
 export default {
   namespace: "company",
@@ -37,8 +43,8 @@ export default {
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put }) {
-			yield call(addCompany, payload.company);
-			
+      yield call(addCompany, payload.company);
+
       let response = yield call(queryCompanyList, {
         ...payload.pagination
       });
@@ -47,6 +53,22 @@ export default {
         payload: response
       });
       if (callback) callback();
+    },
+    *update({ payload, callback }, { call, put }) {
+      yield call(updateCompany, payload.company);
+
+      let response = yield call(queryCompanyList, {
+        ...payload.pagination
+      });
+      yield put({
+        type: "save",
+        payload: response
+      });
+      if (callback) callback();
+    },
+    *select({ payload, callback }, { call, put }) {
+      const response = yield call(selectCompany, payload.id);
+      if (callback) callback(response);
     }
   },
 
