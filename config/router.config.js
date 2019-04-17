@@ -276,6 +276,33 @@ export default [
 
       //新增代码
       {
+        name: "gamemanage",
+        icon: "setting",
+        path: "/gamemanage",
+        routes: [
+          {
+            path: "/gamemanage/game",
+            name: "game",
+            component: "./Game/Game"
+          },
+          {
+            path: "/gamemanage/news",
+            name: "game",
+            component: "./News/News"
+          },
+          {
+            path: "/gamemanage/gallery",
+            name: "gallery",
+            component: "./Gallery/Gallery"
+					},
+					{
+            path: "/gamemanage/strategy",
+            name: "strategy",
+            component: "./Strategy/Strategy"
+          },
+        ]
+      },
+      {
         name: "config",
         icon: "setting",
         path: "/config",

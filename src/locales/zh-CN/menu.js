@@ -40,6 +40,11 @@ export default {
   "menu.account.logout": "退出登录",
 
   //新增代码
+  "menu.gamemanage": "游戏管理",
+  "menu.gamemanage.game": "游戏库",
+  "menu.gamemanage.news": "游戏资讯",
+  "menu.gamemanage.gallery": "游戏图集",
+  "menu.gamemanage.strategy": "游戏攻略",
   "menu.config": "配置管理",
   "menu.config.gametype": "游戏类型管理",
   "menu.config.gamecompany": "游戏公司管理",

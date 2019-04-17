@@ -632,6 +632,56 @@ models: () => [
         ]
       },
       {
+        "name": "gamemanage",
+        "icon": "setting",
+        "path": "/gamemanage",
+        "routes": [
+          {
+            "path": "/gamemanage/game",
+            "name": "game",
+            "component": _dvaDynamic({
+  
+  component: () => import(/* webpackChunkName: "p__Game__Game" */'../Game/Game'),
+  LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
+}),
+            "exact": true
+          },
+          {
+            "path": "/gamemanage/news",
+            "name": "game",
+            "component": _dvaDynamic({
+  
+  component: () => import(/* webpackChunkName: "p__News__News" */'../News/News'),
+  LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
+}),
+            "exact": true
+          },
+          {
+            "path": "/gamemanage/gallery",
+            "name": "gallery",
+            "component": _dvaDynamic({
+  
+  component: () => import(/* webpackChunkName: "p__Gallery__Gallery" */'../Gallery/Gallery'),
+  LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
+}),
+            "exact": true
+          },
+          {
+            "path": "/gamemanage/strategy",
+            "name": "strategy",
+            "component": _dvaDynamic({
+  
+  component: () => import(/* webpackChunkName: "p__Strategy__Strategy" */'../Strategy/Strategy'),
+  LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
+}),
+            "exact": true
+          },
+          {
+            "component": () => React.createElement(require('/Users/zyb/work/joyzone-manage-system-react/node_modules/_umi-build-dev@1.6.1@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+          }
+        ]
+      },
+      {
         "name": "config",
         "icon": "setting",
         "path": "/config",
