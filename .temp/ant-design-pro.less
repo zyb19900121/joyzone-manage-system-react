@@ -3126,6 +3126,55 @@ font.weak {
 }
 
 /* 
+  Convert to from  src/pages/Game/Game.less
+ */
+
+.antd-pro-pages-game-game-tableList {
+  .antd-pro-pages-game-game-tableListOperator {
+    margin-bottom: 16px;
+    button {
+      margin-right: 8px;
+    }
+  }
+}
+
+.antd-pro-pages-game-game-tableListForm {
+  .ant-form-item {
+    display: flex;
+    margin-right: 0;
+    margin-bottom: 24px;
+    > .ant-form-item-label {
+      width: auto;
+      padding-right: 8px;
+      line-height: 32px;
+    }
+    .ant-form-item-control {
+      line-height: 32px;
+    }
+  }
+  .ant-form-item-control-wrapper {
+    flex: 1;
+  }
+  .antd-pro-pages-game-game-submitButtons {
+    display: block;
+    margin-bottom: 24px;
+    white-space: nowrap;
+  }
+}
+
+@media screen and (max-width: @screen-lg) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 8px;
+  }
+}
+
+/* 
   Convert to from  src/pages/List/Applications.less
 */
 .antd-pro-pages-list-applications-filterCardList {

@@ -633,14 +633,17 @@ models: () => [
       },
       {
         "name": "gamemanage",
-        "icon": "setting",
+        "icon": "crown",
         "path": "/gamemanage",
         "routes": [
           {
             "path": "/gamemanage/game",
             "name": "game",
             "component": _dvaDynamic({
-  
+  app: window.g_app,
+models: () => [
+  import(/* webpackChunkName: 'p__Game__models__game.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/game.js').then(m => { return { namespace: 'game',...m.default}})
+],
   component: () => import(/* webpackChunkName: "p__Game__Game" */'../Game/Game'),
   LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
 }),

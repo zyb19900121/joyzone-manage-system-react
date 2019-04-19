@@ -277,7 +277,7 @@ export default [
       //新增代码
       {
         name: "gamemanage",
-        icon: "setting",
+        icon: "crown",
         path: "/gamemanage",
         routes: [
           {
