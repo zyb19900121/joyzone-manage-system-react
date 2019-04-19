@@ -19,11 +19,17 @@ import PageHeaderWrapper from "@/components/PageHeaderWrapper";
 
 import styles from "./Game.less";
 
+import { baseUrl } from "@/utils/global";
+
 @connect(({ game, loading }) => ({
   game,
   loading: loading.models.game
 }))
 class Game extends React.Component {
+  state = {
+    pageSize: 10
+  };
+
   initialParams = {
     pageSize: 10,
     current: 1
@@ -40,55 +46,41 @@ class Game extends React.Component {
     });
   }
 
-  renderGameList() {
-    console.log("this.props: ", this.props);
-
-    console.log("data: ", data);
-    // return (
-    //   <div>
-    //     {this.state.comments.map(comment => (
-    //       <Comment comment={comment} key={comment.id} />
-    //     ))}
-    //   </div>
-    // );
-  }
-
   handlePageSizeChange = (current, pageSize) => {
-    console.log("current: ", current);
-    console.log("pageSize: ", pageSize);
-    // const { dispatch } = this.props;
-    // const params = {
-    //   pageSize: 10,
-    //   current: page
-    // };
-    // dispatch({
-    //   type: "game/fetch",
-    //   payload: params
-    // });
+    this.setState({
+      pageSize: pageSize
+    });
+    const { dispatch } = this.props;
+    const params = {
+      pageSize,
+      current
+    };
+    dispatch({
+      type: "game/fetch",
+      payload: params
+    });
   };
 
   handlePageChange = (current, pageSize) => {
-    console.log("current: ", current);
-    console.log("pageSize: ", pageSize);
-    // const { dispatch } = this.props;
-    // const params = {
-    //   pageSize: 10,
-    //   current: page
-    // };
-    // dispatch({
-    //   type: "game/fetch",
-    //   payload: params
-    // });
+    const { dispatch } = this.props;
+    const params = {
+      pageSize,
+      current
+    };
+    dispatch({
+      type: "game/fetch",
+      payload: params
+    });
   };
 
-  handleAddGame = () => {
-    console.log("addGame");
-  };
+  handleAddGame = () => {};
   render() {
     const {
-      game: { data }
+      game: { data },
+      loading
     } = this.props;
-    console.log("data: ", data);
+
+    const { pageSize } = this.state;
     return (
       <PageHeaderWrapper title="游戏库">
         <Card bordered={false}>
@@ -103,25 +95,32 @@ class Game extends React.Component {
               </Button>
             </div>
           </div>
-          {/* <div className={styles.gameList}> */}
-          <List
-            grid={{ gutter: 16, column: 4 }}
-            dataSource={data.list}
-            pagination={{
-              showSizeChanger: true,
-              onShowSizeChange: this.handlePageSizeChange,
-              onChange: this.handlePageChange,
-              pageSize: 10,
-              total: data.total
-            }}
-            renderItem={item => (
-              <List.Item>
-                <Card title={item.game_name}>Card content</Card>
-              </List.Item>
-            )}
-          />
-
-          {/* </div> */}
+          <div className={styles.gameList}>
+            <List
+              loading={loading}
+              // grid={{ gutter: 16, column: 4 }}
+              split={false}
+              dataSource={data.list}
+              pagination={{
+                defaultPageSize: 10,
+                pageSize: pageSize,
+                showSizeChanger: true,
+                onShowSizeChange: this.handlePageSizeChange,
+                onChange: this.handlePageChange,
+                total: data.total
+              }}
+              renderItem={item => (
+                <List.Item className={styles.gameItem}>
+                  <div>
+                    <img
+                      className={styles.gameCover}
+                      src={`${baseUrl()}${item.game_cover}`}
+                    />
+                  </div>
+                </List.Item>
+              )}
+            />
+          </div>
         </Card>
       </PageHeaderWrapper>
     );

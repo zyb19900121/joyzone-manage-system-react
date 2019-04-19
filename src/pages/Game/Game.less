@@ -1,5 +1,5 @@
-@import '~antd/lib/style/themes/default.less';
-@import '~@/utils/utils.less';
+@import "~antd/lib/style/themes/default.less";
+@import "~@/utils/utils.less";
 
 .tableList {
   .tableListOperator {
@@ -33,6 +33,35 @@
     display: block;
     margin-bottom: 24px;
     white-space: nowrap;
+  }
+}
+
+.gameList {
+  margin-top: 20px;
+  :global {
+    .ant-spin-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .ant-list-item {
+      padding: 0;
+    }
+  }
+}
+
+.gameItem {
+  height: 258px;
+  margin: 25px;
+  position: relative;
+  width: 160px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+  border: 1px solid #ebeef5;
+	background-color: #fff;
+	border-radius: 4px;
+  .gameCover {
+    width: 100%;
+    height: 100%;
   }
 }
 
