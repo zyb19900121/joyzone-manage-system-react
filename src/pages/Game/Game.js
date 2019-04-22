@@ -163,11 +163,13 @@ class Game extends React.Component {
                       </div>
                       <div className={styles.operationArea}>
                         <Button
+                          type="primary"
                           shape="circle"
                           icon="edit"
                           onClick={() => this.handleDeleteGame(item.id)}
                         />
                         <Button
+                          type="danger"
                           shape="circle"
                           icon="delete"
                           onClick={() => this.handleDeleteGame(item.id)}
