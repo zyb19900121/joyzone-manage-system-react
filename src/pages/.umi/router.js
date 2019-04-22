@@ -651,7 +651,7 @@ models: () => [
           },
           {
             "path": "/gamemanage/news",
-            "name": "game",
+            "name": "news",
             "component": _dvaDynamic({
   
   component: () => import(/* webpackChunkName: "p__News__News" */'../News/News'),

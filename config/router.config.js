@@ -287,7 +287,7 @@ export default [
           },
           {
             path: "/gamemanage/news",
-            name: "game",
+            name: "news",
             component: "./News/News"
           },
           {

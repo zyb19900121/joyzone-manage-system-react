@@ -111,7 +111,32 @@ class Game extends React.Component {
               }}
               renderItem={item => (
                 <List.Item className={styles.gameItem}>
-                  <div>
+                  <div className={styles.gameContainer}>
+                    <div className={styles.gameDetail}>
+                      <div className={styles.detailInfo}>
+                        <div className={styles.infoItem}>
+                          <p className={styles.gameName}>{item.game_name}</p>
+                          <p className={styles.gameNameEn}>
+                            {item.game_name_en}
+                          </p>
+                        </div>
+                        <div className={styles.infoItem}>
+                          <p className={styles.score}>{item.game_score}</p>
+                        </div>
+                        <div className={styles.infoItem}>
+                          <p className={styles.type}>类型：{item.game_type}</p>
+                        </div>
+                        <div className={styles.infoItem}>
+                          <p className={styles.date}>
+                            发售日期：{item.sale_date}
+                          </p>
+                        </div>
+                      </div>
+                      <div className={styles.operationArea}>
+                        <Button shape="circle" icon="edit" />
+                        <Button shape="circle" icon="delete" />
+                      </div>
+                    </div>
                     <img
                       className={styles.gameCover}
                       src={`${baseUrl()}${item.game_cover}`}

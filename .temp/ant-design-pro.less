@@ -3129,7 +3129,7 @@ font.weak {
 
 /* 
   Convert to from  src/pages/Game/Game.less
- */
+*/
 
 .antd-pro-pages-game-game-tableList {
   .antd-pro-pages-game-game-tableListOperator {
@@ -3180,14 +3180,73 @@ font.weak {
   margin: 25px;
   position: relative;
   width: 160px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 4px 12px 2px rgba(0, 0, 0, 0.3);
   transition: 0.3s;
-  border: 1px solid #ebeef5;
+  // border: 1px solid #ebeef5;
   background-color: #fff;
-  border-radius: 4px;
-  .antd-pro-pages-game-game-gameCover {
-    width: 100%;
-    height: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+  .antd-pro-pages-game-game-gameContainer {
+    position: relative;
+    &:hover {
+      .antd-pro-pages-game-game-gameDetail {
+        display: block;
+      }
+    }
+    .antd-pro-pages-game-game-gameDetail {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      transition: all ease 0.5;
+      padding: 10px;
+      display: none;
+      p {
+        color: #fff;
+        line-height: 1;
+        margin: 0;
+      }
+      .antd-pro-pages-game-game-detailInfo {
+        font-size: 12px;
+        height: 198px;
+        justify-content: space-between;
+        text-align: center;
+        display: flex;
+        flex-flow: column;
+        .antd-pro-pages-game-game-infoItem {
+          .antd-pro-pages-game-game-gameName {
+            line-height: 1.5;
+            font-size: 13px;
+            text-shadow: 1px 1px 10px #909399;
+          }
+          .antd-pro-pages-game-game-gameName {
+            margin-top: 10px;
+          }
+          .antd-pro-pages-game-game-score {
+            color: #f56c6c;
+            font-size: 36px;
+          }
+          .antd-pro-pages-game-game-type {
+            line-height: 1.5;
+            margin-top: 10px;
+          }
+          .antd-pro-pages-game-game-date {
+            margin-top: 10px;
+          }
+        }
+      }
+      .antd-pro-pages-game-game-operationArea {
+        height: 40px;
+        text-align: center;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
+    }
+    .antd-pro-pages-game-game-gameCover {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 
