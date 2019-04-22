@@ -7,3 +7,11 @@ import { baseUrl } from "@/utils/global";
 export async function queryGameList(params) {
   return request(`${baseUrl()}/manage/gameReact?${stringify(params)}`);
 }
+
+//删除游戏
+export async function removeGame(params) {
+  return request(`${baseUrl()}/manage/gameReact/${restFormat(params)}`, {
+    method: "DELETE",
+    body: {}
+  });
+}

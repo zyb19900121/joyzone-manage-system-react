@@ -27,6 +27,7 @@ import { baseUrl } from "@/utils/global";
 }))
 class Game extends React.Component {
   state = {
+    current: 1,
     pageSize: 10
   };
 
@@ -48,7 +49,7 @@ class Game extends React.Component {
 
   handlePageSizeChange = (current, pageSize) => {
     this.setState({
-      pageSize: pageSize
+      pageSize
     });
     const { dispatch } = this.props;
     const params = {
@@ -62,6 +63,9 @@ class Game extends React.Component {
   };
 
   handlePageChange = (current, pageSize) => {
+    this.setState({
+      current
+    });
     const { dispatch } = this.props;
     const params = {
       pageSize,
@@ -74,6 +78,30 @@ class Game extends React.Component {
   };
 
   handleAddGame = () => {};
+  handleDeleteGame = id => {
+    const { dispatch } = this.props;
+    Modal.confirm({
+      title: "删除记录",
+      content: "确定删除该游戏吗？",
+      okText: "确认",
+      cancelText: "取消",
+      onOk: () => {
+        dispatch({
+          type: "game/remove",
+          payload: {
+            pagination: {
+              current: this.state.current,
+              pageSize: this.state.pageSize
+            },
+            id
+          },
+          callback: () => {
+            message.success("删除成功");
+          }
+        });
+      }
+    });
+  };
   render() {
     const {
       game: { data },
@@ -123,18 +151,27 @@ class Game extends React.Component {
                         <div className={styles.infoItem}>
                           <p className={styles.score}>{item.game_score}</p>
                         </div>
-                        <div className={styles.infoItem}>
+                        <div
+                          className={styles.infoItem}
+                          style={{ paddingBottom: 10 }}
+                        >
                           <p className={styles.type}>类型：{item.game_type}</p>
-                        </div>
-                        <div className={styles.infoItem}>
                           <p className={styles.date}>
                             发售日期：{item.sale_date}
                           </p>
                         </div>
                       </div>
                       <div className={styles.operationArea}>
-                        <Button shape="circle" icon="edit" />
-                        <Button shape="circle" icon="delete" />
+                        <Button
+                          shape="circle"
+                          icon="edit"
+                          onClick={() => this.handleDeleteGame(item.id)}
+                        />
+                        <Button
+                          shape="circle"
+                          icon="delete"
+                          onClick={() => this.handleDeleteGame(item.id)}
+                        />
                       </div>
                     </div>
                     <img
