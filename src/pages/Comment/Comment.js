@@ -65,8 +65,8 @@ class Comment extends PureComponent {
       render: val => <span>{moment(val).format("YYYY-MM-DD HH:mm:ss")}</span>
     },
     {
-			title: "操作",
-			align: "center",
+      title: "操作",
+      align: "center",
       render: item => (
         <Fragment>
           <a onClick={() => this.handleDelete(item.id)}>删除</a>
@@ -161,7 +161,7 @@ class Comment extends PureComponent {
       }
     };
     let options = [];
-    if (data && data.list) {
+    if (data && data.list.length) {
       options = data.list.map(game => (
         <Option key={game.id}>{game.game_name}</Option>
       ));

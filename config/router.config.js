@@ -283,7 +283,22 @@ export default [
           {
             path: "/gamemanage/game",
             name: "game",
-            component: "./Game/Game"
+            // component: "./Game/Game",
+            routes: [
+              { path: "/gamemanage/game", redirect: "/gamemanage/game/list" },
+              {
+                name: "game-list",
+                path: "/gamemanage/game/list",
+                hideInMenu: true,
+                component: "./Game/Game"
+              },
+              {
+                name: "game-create",
+                path: "/gamemanage/game/create",
+                hideInMenu: true,
+                component: "./Game/CreateGame"
+              }
+            ]
           },
           {
             path: "/gamemanage/news",
@@ -294,12 +309,12 @@ export default [
             path: "/gamemanage/gallery",
             name: "gallery",
             component: "./Gallery/Gallery"
-					},
-					{
+          },
+          {
             path: "/gamemanage/strategy",
             name: "strategy",
             component: "./Strategy/Strategy"
-          },
+          }
         ]
       },
       {

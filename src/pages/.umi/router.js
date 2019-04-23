@@ -639,15 +639,46 @@ models: () => [
           {
             "path": "/gamemanage/game",
             "name": "game",
-            "component": _dvaDynamic({
+            "routes": [
+              {
+                "path": "/gamemanage/game",
+                "redirect": "/gamemanage/game/list",
+                "exact": true
+              },
+              {
+                "name": "game-list",
+                "path": "/gamemanage/game/list",
+                "hideInMenu": true,
+                "component": _dvaDynamic({
   app: window.g_app,
 models: () => [
-  import(/* webpackChunkName: 'p__Game__models__game.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/game.js').then(m => { return { namespace: 'game',...m.default}})
+  import(/* webpackChunkName: 'p__Game__models__game.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/game.js').then(m => { return { namespace: 'game',...m.default}}),
+  import(/* webpackChunkName: 'p__Game__models__type.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/type.js').then(m => { return { namespace: 'type',...m.default}})
 ],
-  component: () => import(/* webpackChunkName: "p__Game__Game" */'../Game/Game'),
+  component: () => import(/* webpackChunkName: "layouts__BasicLayout" */'../Game/Game'),
   LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
 }),
-            "exact": true
+                "exact": true
+              },
+              {
+                "name": "game-create",
+                "path": "/gamemanage/game/create",
+                "hideInMenu": true,
+                "component": _dvaDynamic({
+  app: window.g_app,
+models: () => [
+  import(/* webpackChunkName: 'p__Game__models__game.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/game.js').then(m => { return { namespace: 'game',...m.default}}),
+  import(/* webpackChunkName: 'p__Game__models__type.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/type.js').then(m => { return { namespace: 'type',...m.default}})
+],
+  component: () => import(/* webpackChunkName: "layouts__BasicLayout" */'../Game/CreateGame'),
+  LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
+}),
+                "exact": true
+              },
+              {
+                "component": () => React.createElement(require('/Users/zyb/work/joyzone-manage-system-react/node_modules/_umi-build-dev@1.6.1@umi-build-dev/lib/plugins/404/NotFound.js').default, { pagesPath: 'src/pages', hasRoutesInConfig: true })
+              }
+            ]
           },
           {
             "path": "/gamemanage/news",

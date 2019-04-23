@@ -77,7 +77,14 @@ class Game extends React.Component {
     });
   };
 
-  handleAddGame = () => {};
+  handleAddGame = () => {
+		router.push({
+      pathname: "/gamemanage/game/create",
+      // state: {
+      //   account
+      // }
+    });
+	};
   handleDeleteGame = id => {
     const { dispatch } = this.props;
     Modal.confirm({
@@ -119,7 +126,7 @@ class Game extends React.Component {
                 type="primary"
                 onClick={() => this.handleAddGame()}
               >
-                添加类型
+                添加游戏
               </Button>
             </div>
           </div>
