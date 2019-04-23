@@ -10,6 +10,9 @@ import {
   Card,
   Form,
   Input,
+  InputNumber,
+  Switch,
+  DatePicker,
   Icon,
   Button,
   Modal,
@@ -24,11 +27,13 @@ import styles from "./CreateGame.less";
 import { baseUrl } from "@/utils/global";
 
 const FormItem = Form.Item;
+const { TextArea } = Input;
 const Option = Select.Option;
 
-@connect(({ game, type, loading }) => ({
+@connect(({ game, type, company, loading }) => ({
   game,
   type,
+  company,
   submitting: loading.effects["form/submitRegularForm"]
 }))
 @Form.create()
@@ -37,6 +42,10 @@ class CreateGame extends React.Component {
     const { dispatch } = this.props;
     dispatch({
       type: "type/fetch",
+      payload: { isFilter: 1 }
+    });
+    dispatch({
+      type: "company/fetch",
       payload: { isFilter: 1 }
     });
   }
@@ -55,16 +64,31 @@ class CreateGame extends React.Component {
   render() {
     const {
       form,
-      submitting,
-      type: { data }
+      type,
+      company,
+      submitting
       // register: { submit }
     } = this.props;
+
+    const typeList = type.data.list;
+    const companyList = company.data.list;
     const { getFieldDecorator } = form;
 
-    let typeOptions = [];
-    if (data && data.list.length) {
-      typeOptions = data.list.map((item, index) => (
-        <Option key={item.type_name_cn}>{item.type_name_cn}</Option>
+    let typeOptions,
+      companyOptions = [];
+    if (typeList.length) {
+      typeOptions = typeList.map((item, index) => (
+        <Option key={index} value={item.type_name_cn}>
+          {item.type_name_cn}
+        </Option>
+      ));
+    }
+
+    if (companyList.length) {
+      companyOptions = companyList.map((item, index) => (
+        <Option key={index} value={item.company_name_en}>
+          {item.company_name_en}
+        </Option>
       ));
     }
 
@@ -147,6 +171,47 @@ class CreateGame extends React.Component {
                   <Option value="日文">日文</Option>
                 </Select>
               )}
+            </FormItem>
+
+            <FormItem {...formItemLayout} label="游戏开发商">
+              {getFieldDecorator("game_developers", {})(
+                <Select showSearch allowClear={true} placeholder="请选择">
+                  {companyOptions}
+                </Select>
+              )}
+            </FormItem>
+
+            <FormItem {...formItemLayout} label="游戏发行商">
+              {getFieldDecorator("game_publisher", {})(
+                <Select showSearch allowClear={true} placeholder="请选择">
+                  {companyOptions}
+                </Select>
+              )}
+            </FormItem>
+
+            <FormItem {...formItemLayout} label="游戏评分">
+              {getFieldDecorator("game_score", { initialValue: 1 })(
+                <InputNumber min={1} max={10} step={0.5} />
+              )}
+            </FormItem>
+
+            <FormItem {...formItemLayout} label="已发售">
+              {getFieldDecorator("is_sold")(<Switch defaultChecked />)}
+            </FormItem>
+
+            <FormItem {...formItemLayout} label="发售时间">
+              {getFieldDecorator("sale_date")(<DatePicker />)}
+            </FormItem>
+
+            <FormItem {...formItemLayout} label="游戏简介">
+              {getFieldDecorator("game_desc", {
+                rules: [
+                  {
+                    max: 300,
+                    message: "不得超过300个字符"
+                  }
+                ]
+              })(<TextArea rows={4} />)}
             </FormItem>
 
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>

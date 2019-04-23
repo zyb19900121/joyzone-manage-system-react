@@ -652,6 +652,7 @@ models: () => [
                 "component": _dvaDynamic({
   app: window.g_app,
 models: () => [
+  import(/* webpackChunkName: 'p__Game__models__company.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/company.js').then(m => { return { namespace: 'company',...m.default}}),
   import(/* webpackChunkName: 'p__Game__models__game.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/game.js').then(m => { return { namespace: 'game',...m.default}}),
   import(/* webpackChunkName: 'p__Game__models__type.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/type.js').then(m => { return { namespace: 'type',...m.default}})
 ],
@@ -667,6 +668,7 @@ models: () => [
                 "component": _dvaDynamic({
   app: window.g_app,
 models: () => [
+  import(/* webpackChunkName: 'p__Game__models__company.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/company.js').then(m => { return { namespace: 'company',...m.default}}),
   import(/* webpackChunkName: 'p__Game__models__game.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/game.js').then(m => { return { namespace: 'game',...m.default}}),
   import(/* webpackChunkName: 'p__Game__models__type.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Game/models/type.js').then(m => { return { namespace: 'type',...m.default}})
 ],
