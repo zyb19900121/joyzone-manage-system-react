@@ -1,4 +1,4 @@
-import { queryGameList, removeGame } from "@/services/game";
+import { queryGameList, addGame, removeGame } from "@/services/game";
 
 export default {
   namespace: "game",
@@ -34,6 +34,19 @@ export default {
         type: "save",
         payload: response
       });
+      if (callback) callback();
+    },
+    *add({ payload, callback }, { call, put }) {
+			console.log('payload: ', payload);
+      yield call(addGame, payload);
+
+      // let response = yield call(queryCompanyList, {
+      //   ...payload.pagination
+      // });
+      // yield put({
+      //   type: "save",
+      //   payload: response
+      // });
       if (callback) callback();
     }
   },

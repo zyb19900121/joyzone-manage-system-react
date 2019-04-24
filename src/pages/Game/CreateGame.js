@@ -59,7 +59,29 @@ class CreateGame extends React.Component {
     });
   }
 
-  handleSubmit() {}
+  handleSubmit = e => {
+    e.preventDefault();
+    const { form, dispatch } = this.props;
+    form.validateFieldsAndScroll(
+      { force: true, scroll: { offsetTop: 100 } },
+      (err, values) => {
+        if (!err) {
+          dispatch({
+            type: "game/add",
+            payload: {
+              ...values
+            },
+            callback: () => {
+							router.push({
+								pathname: "/gamemanage/game"
+							});
+              message.success("添加成功");
+            }
+          });
+        }
+      }
+    );
+  };
 
   render() {
     const {
