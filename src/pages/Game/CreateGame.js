@@ -39,7 +39,8 @@ const Option = Select.Option;
 @Form.create()
 class CreateGame extends React.Component {
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, location } = this.props;
+
     dispatch({
       type: "type/fetch",
       payload: { isFilter: 1 }
@@ -48,15 +49,43 @@ class CreateGame extends React.Component {
       type: "company/fetch",
       payload: { isFilter: 1 }
     });
+
+    location.state.id &&
+      dispatch({
+        type: "game/getGameDetail",
+        payload: {
+          id: location.state.id
+        }
+      });
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: "game/clearGameDetail",
+      payload: {}
+    });
   }
 
   handleCancel() {
-    router.push({
-      pathname: "/gamemanage/game"
-      // state: {
-      //   account
-      // }
+    const { dispatch } = this.props;
+    dispatch({
+      type: "game/clearGameDetail",
+      payload: {}
     });
+
+    if (this.props.location.state && this.props.location.state.pagination) {
+      router.push({
+        pathname: "/gamemanage/game/list",
+        state: {
+          pagination: { ...this.props.location.state.pagination }
+        }
+      });
+    } else {
+      router.push({
+        pathname: "/gamemanage/game/list"
+      });
+    }
   }
 
   handleSubmit = e => {
@@ -72,9 +101,9 @@ class CreateGame extends React.Component {
               ...values
             },
             callback: () => {
-							router.push({
-								pathname: "/gamemanage/game"
-							});
+              router.push({
+                pathname: "/gamemanage/game"
+              });
               message.success("添加成功");
             }
           });
@@ -86,11 +115,15 @@ class CreateGame extends React.Component {
   render() {
     const {
       form,
+      game: { gameDetail },
       type,
       company,
-      submitting
+      submitting,
+      location
       // register: { submit }
     } = this.props;
+
+    const gameId = location.state.id || undefined;
 
     const typeList = type.data.list;
     const companyList = company.data.list;
@@ -117,7 +150,7 @@ class CreateGame extends React.Component {
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 5 }
+        sm: { span: 6 }
       },
       wrapperCol: {
         xs: { span: 24 },
@@ -132,7 +165,7 @@ class CreateGame extends React.Component {
       }
     };
     return (
-      <PageHeaderWrapper title="添加游戏">
+      <PageHeaderWrapper title={gameId ? "编辑游戏" : "添加游戏"}>
         <Card bordered={false}>
           {/* {submit === "error" && this.renderMessage()} */}
           <Form onSubmit={this.handleSubmit}>
@@ -147,7 +180,8 @@ class CreateGame extends React.Component {
                     max: 32,
                     message: "不得超过32个字符"
                   }
-                ]
+                ],
+                initialValue: gameDetail.game_name
               })(<Input placeholder="请输入" allowClear />)}
             </FormItem>
 
@@ -158,12 +192,15 @@ class CreateGame extends React.Component {
                     max: 64,
                     message: "不得超过64个字符"
                   }
-                ]
+                ],
+                initialValue: gameDetail.game_name_en
               })(<Input placeholder="请输入" allowClear />)}
             </FormItem>
 
             <FormItem {...formItemLayout} label="游戏平台">
-              {getFieldDecorator("platform", {})(
+              {getFieldDecorator("platform", {
+                initialValue: gameDetail.platform
+              })(
                 <Select placeholder="请选择" allowClear>
                   <Option value="PlayStation4">PlayStation4</Option>
                   <Option value="Nintendo Switch">Nintendo Switch</Option>
@@ -173,7 +210,10 @@ class CreateGame extends React.Component {
             </FormItem>
 
             <FormItem {...formItemLayout} label="游戏类型">
-              {getFieldDecorator("game_type", {})(
+              {getFieldDecorator("game_type", {
+                initialValue:
+                  gameDetail.game_type && gameDetail.game_type.split(",")
+              })(
                 <Select
                   mode="multiple"
                   showSearch
@@ -186,7 +226,11 @@ class CreateGame extends React.Component {
             </FormItem>
 
             <FormItem {...formItemLayout} label="游戏语言">
-              {getFieldDecorator("game_language", {})(
+              {getFieldDecorator("game_language", {
+                initialValue:
+                  gameDetail.game_language &&
+                  gameDetail.game_language.split(",")
+              })(
                 <Select mode="multiple" placeholder="请选择" allowClear>
                   <Option value="中文">中文</Option>
                   <Option value="英文">英文</Option>
@@ -196,7 +240,9 @@ class CreateGame extends React.Component {
             </FormItem>
 
             <FormItem {...formItemLayout} label="游戏开发商">
-              {getFieldDecorator("game_developers", {})(
+              {getFieldDecorator("game_developers", {
+                initialValue: gameDetail.game_developers
+              })(
                 <Select showSearch allowClear={true} placeholder="请选择">
                   {companyOptions}
                 </Select>
@@ -204,7 +250,9 @@ class CreateGame extends React.Component {
             </FormItem>
 
             <FormItem {...formItemLayout} label="游戏发行商">
-              {getFieldDecorator("game_publisher", {})(
+              {getFieldDecorator("game_publisher", {
+                initialValue: gameDetail.game_publisher
+              })(
                 <Select showSearch allowClear={true} placeholder="请选择">
                   {companyOptions}
                 </Select>
@@ -212,17 +260,21 @@ class CreateGame extends React.Component {
             </FormItem>
 
             <FormItem {...formItemLayout} label="游戏评分">
-              {getFieldDecorator("game_score", { initialValue: 1 })(
-                <InputNumber min={1} max={10} step={0.5} />
-              )}
+              {getFieldDecorator("game_score", {
+                initialValue: gameDetail.game_score || 1
+              })(<InputNumber min={1} max={10} step={0.5} />)}
             </FormItem>
 
             <FormItem {...formItemLayout} label="已发售">
-              {getFieldDecorator("is_sold")(<Switch defaultChecked />)}
+              {getFieldDecorator("is_sold", {
+                initialValue: Boolean(gameDetail.is_sold) || true
+              })(<Switch defaultChecked />)}
             </FormItem>
 
             <FormItem {...formItemLayout} label="发售时间">
-              {getFieldDecorator("sale_date")(<DatePicker />)}
+              {getFieldDecorator("sale_date", {
+                initialValue: moment(gameDetail.sale_date)
+              })(<DatePicker format="YYYY-MM-DD" />)}
             </FormItem>
 
             <FormItem {...formItemLayout} label="游戏简介">
@@ -232,7 +284,8 @@ class CreateGame extends React.Component {
                     max: 300,
                     message: "不得超过300个字符"
                   }
-                ]
+                ],
+                initialValue: gameDetail.game_desc
               })(<TextArea rows={4} />)}
             </FormItem>
 

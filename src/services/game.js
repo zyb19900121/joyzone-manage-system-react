@@ -10,11 +10,15 @@ export async function queryGameList(params) {
 
 //添加游戏
 export async function addGame(params) {
-	console.log('params: ', params);
+  console.log("params: ", params);
   return request(`${baseUrl()}/manage/gameReact`, {
     method: "POST",
     body: params
   });
+}
+
+export async function getGameDetail(params) {
+  return request(`${baseUrl()}/manage/gameReact/${restFormat(params)}`);
 }
 
 //删除游戏

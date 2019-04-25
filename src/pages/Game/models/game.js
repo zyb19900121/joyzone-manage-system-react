@@ -1,22 +1,42 @@
-import { queryGameList, addGame, removeGame } from "@/services/game";
+import {
+  queryGameList,
+  getGameDetail,
+  addGame,
+  removeGame
+} from "@/services/game";
 
 export default {
   namespace: "game",
 
   state: {
-    data: {
-      list: []
-    }
+    gameList: [],
+    gameDetail: {}
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
+    *getGameList({ payload }, { call, put }) {
       const response = yield call(queryGameList, payload);
       yield put({
-        type: "save",
+        type: "gameList",
         payload: response
       });
     },
+    *getGameDetail({ payload }, { call, put }) {
+      const response = yield call(getGameDetail, payload.id);
+      yield put({
+        type: "gameDetail",
+        payload: response
+      });
+    },
+
+    *clearGameDetail({ payload }, { call, put }) {
+      console.log("payload: ", payload);
+      yield put({
+        type: "gameDetail",
+        payload
+      });
+    },
+
     *remove({ payload, callback }, { call, put }) {
       yield call(removeGame, payload.id);
 
@@ -31,13 +51,12 @@ export default {
         });
       }
       yield put({
-        type: "save",
+        type: "gameList",
         payload: response
       });
       if (callback) callback();
     },
     *add({ payload, callback }, { call, put }) {
-			console.log('payload: ', payload);
       yield call(addGame, payload);
 
       // let response = yield call(queryCompanyList, {
@@ -52,10 +71,17 @@ export default {
   },
 
   reducers: {
-    save(state, action) {
+    gameList(state, action) {
       return {
         ...state,
-        data: action.payload
+        gameList: action.payload
+      };
+    },
+
+    gameDetail(state, action) {
+      return {
+        ...state,
+        gameDetail: action.payload
       };
     }
   }

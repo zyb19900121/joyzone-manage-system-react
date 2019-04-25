@@ -40,11 +40,39 @@ class Game extends React.Component {
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, location } = this.props;
+
+    if (location.state && location.state.pagination) {
+      this.initialParams = {
+        pageSize: location.state.pagination.pageSize,
+        current: location.state.pagination.current
+      };
+      this.setState({
+        pageSize: location.state.pagination.pageSize,
+        current: location.state.pagination.current
+      });
+    }
+
     dispatch({
-      type: "game/fetch",
+      type: "game/getGameList",
       payload: this.initialParams
     });
+  }
+
+  componentDidUpdate() {
+    window.history.replaceState(
+      {
+        state: null
+      },
+      "/gamemanage/game/list"
+    );
+  }
+
+  componentWillUnmount() {
+    this.initialParams = {
+      pageSize: 10,
+      current: 1
+    };
   }
 
   handlePageSizeChange = (current, pageSize) => {
@@ -57,7 +85,7 @@ class Game extends React.Component {
       current
     };
     dispatch({
-      type: "game/fetch",
+      type: "game/getGameList",
       payload: params
     });
   };
@@ -72,19 +100,35 @@ class Game extends React.Component {
       current
     };
     dispatch({
-      type: "game/fetch",
+      type: "game/getGameList",
       payload: params
     });
   };
 
   handleAddGame = () => {
-		router.push({
+    router.push({
       pathname: "/gamemanage/game/create",
-      // state: {
-      //   account
-      // }
+      state: {
+        pagination: {
+          current: this.state.current,
+          pageSize: this.state.pageSize
+        }
+      }
     });
-	};
+  };
+
+  handleEditGame = id => {
+    router.push({
+      pathname: "/gamemanage/game/create",
+      state: {
+        id,
+        pagination: {
+          current: this.state.current,
+          pageSize: this.state.pageSize
+        }
+      }
+    });
+  };
   handleDeleteGame = id => {
     const { dispatch } = this.props;
     Modal.confirm({
@@ -111,11 +155,13 @@ class Game extends React.Component {
   };
   render() {
     const {
-      game: { data },
+      game: { gameList },
       loading
     } = this.props;
 
-    const { pageSize } = this.state;
+    let dataList = gameList.list || [];
+
+    const { pageSize, current } = this.state;
     return (
       <PageHeaderWrapper title="游戏库">
         <Card bordered={false}>
@@ -135,14 +181,15 @@ class Game extends React.Component {
               loading={loading}
               // grid={{ gutter: 16, column: 4 }}
               split={false}
-              dataSource={data.list}
+              dataSource={dataList}
               pagination={{
+                current: current,
                 defaultPageSize: 10,
                 pageSize: pageSize,
                 showSizeChanger: true,
                 onShowSizeChange: this.handlePageSizeChange,
                 onChange: this.handlePageChange,
-                total: data.total
+                total: gameList.total
               }}
               renderItem={item => (
                 <List.Item className={styles.gameItem}>
@@ -173,7 +220,7 @@ class Game extends React.Component {
                           type="primary"
                           shape="circle"
                           icon="edit"
-                          onClick={() => this.handleDeleteGame(item.id)}
+                          onClick={() => this.handleEditGame(item.id)}
                         />
                         <Button
                           type="danger"
@@ -185,7 +232,7 @@ class Game extends React.Component {
                     </div>
                     <img
                       className={styles.gameCover}
-                      src={`${baseUrl()}${item.game_cover}`}
+                      src={`${baseUrl()}${item.game_cover1}`}
                     />
                   </div>
                 </List.Item>
