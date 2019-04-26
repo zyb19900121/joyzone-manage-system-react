@@ -90,23 +90,40 @@ class CreateGame extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { form, dispatch } = this.props;
+    const { form, dispatch, location } = this.props;
+    const gameId = location.state.id || undefined;
     form.validateFieldsAndScroll(
       { force: true, scroll: { offsetTop: 100 } },
       (err, values) => {
         if (!err) {
-          dispatch({
-            type: "game/add",
-            payload: {
-              ...values
-            },
-            callback: () => {
-              router.push({
-                pathname: "/gamemanage/game"
-              });
-              message.success("添加成功");
-            }
-          });
+          if (gameId) {
+            dispatch({
+              type: "game/update",
+              payload: {
+								game: {id:gameId,...values},
+								
+              }
+              // callback: () => {
+              //   router.push({
+              //     pathname: "/gamemanage/game"
+              //   });
+              //   message.success("添加成功");
+              // }
+            });
+          } else {
+            dispatch({
+              type: "game/add",
+              payload: {
+                ...values
+              },
+              callback: () => {
+                router.push({
+                  pathname: "/gamemanage/game"
+                });
+                message.success("添加成功");
+              }
+            });
+          }
         }
       }
     );
@@ -199,7 +216,7 @@ class CreateGame extends React.Component {
 
             <FormItem {...formItemLayout} label="游戏平台">
               {getFieldDecorator("platform", {
-                initialValue: gameDetail.platform
+                initialValue: gameDetail.platform || undefined
               })(
                 <Select placeholder="请选择" allowClear>
                   <Option value="PlayStation4">PlayStation4</Option>
@@ -212,7 +229,8 @@ class CreateGame extends React.Component {
             <FormItem {...formItemLayout} label="游戏类型">
               {getFieldDecorator("game_type", {
                 initialValue:
-                  gameDetail.game_type && gameDetail.game_type.split(",")
+                  (gameDetail.game_type && gameDetail.game_type.split(",")) ||
+                  []
               })(
                 <Select
                   mode="multiple"
@@ -228,8 +246,9 @@ class CreateGame extends React.Component {
             <FormItem {...formItemLayout} label="游戏语言">
               {getFieldDecorator("game_language", {
                 initialValue:
-                  gameDetail.game_language &&
-                  gameDetail.game_language.split(",")
+                  (gameDetail.game_language &&
+                    gameDetail.game_language.split(",")) ||
+                  []
               })(
                 <Select mode="multiple" placeholder="请选择" allowClear>
                   <Option value="中文">中文</Option>
@@ -241,7 +260,7 @@ class CreateGame extends React.Component {
 
             <FormItem {...formItemLayout} label="游戏开发商">
               {getFieldDecorator("game_developers", {
-                initialValue: gameDetail.game_developers
+                initialValue: gameDetail.game_developers || undefined
               })(
                 <Select showSearch allowClear={true} placeholder="请选择">
                   {companyOptions}
@@ -251,7 +270,7 @@ class CreateGame extends React.Component {
 
             <FormItem {...formItemLayout} label="游戏发行商">
               {getFieldDecorator("game_publisher", {
-                initialValue: gameDetail.game_publisher
+                initialValue: gameDetail.game_publisher || undefined
               })(
                 <Select showSearch allowClear={true} placeholder="请选择">
                   {companyOptions}
@@ -273,7 +292,9 @@ class CreateGame extends React.Component {
 
             <FormItem {...formItemLayout} label="发售时间">
               {getFieldDecorator("sale_date", {
-                initialValue: moment(gameDetail.sale_date)
+                initialValue:
+                  (gameDetail.sale_date && moment(gameDetail.sale_date)) ||
+                  undefined
               })(<DatePicker format="YYYY-MM-DD" />)}
             </FormItem>
 
@@ -285,7 +306,7 @@ class CreateGame extends React.Component {
                     message: "不得超过300个字符"
                   }
                 ],
-                initialValue: gameDetail.game_desc
+                initialValue: gameDetail.game_desc || undefined
               })(<TextArea rows={4} />)}
             </FormItem>
 

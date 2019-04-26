@@ -38,8 +38,7 @@ export default {
     },
 
     *update({ payload, callback }, { call, put }) {
-      yield call(updateType, payload.type);
-
+			yield call(updateType, payload.type);
       let response = yield call(queryTypeList, {
         ...payload.pagination
       });

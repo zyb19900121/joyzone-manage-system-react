@@ -43,7 +43,7 @@ export default {
   "menu.gamemanage": "游戏管理",
   "menu.gamemanage.game": "游戏库",
   "menu.gamemanage.game.game-list": "游戏列表",
-  "menu.gamemanage.game.game-create": "添加游戏",
+  "menu.gamemanage.game.game-create": "游戏管理",
   "menu.gamemanage.news": "游戏资讯",
   "menu.gamemanage.gallery": "游戏图集",
   "menu.gamemanage.strategy": "游戏攻略",

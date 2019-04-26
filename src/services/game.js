@@ -17,6 +17,18 @@ export async function addGame(params) {
   });
 }
 
+//更新游戏
+export async function updateGame(params) {
+  console.log("params: ", params);
+  const id = params.id;
+  delete params.id;
+  return request(`${baseUrl()}/manage/gameReact/${id}`, {
+    method: "PUT",
+    body: params
+  });
+}
+
+//根据ID获取游戏详情
 export async function getGameDetail(params) {
   return request(`${baseUrl()}/manage/gameReact/${restFormat(params)}`);
 }

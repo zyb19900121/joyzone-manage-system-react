@@ -2,6 +2,7 @@ import {
   queryGameList,
   getGameDetail,
   addGame,
+  updateGame,
   removeGame
 } from "@/services/game";
 
@@ -58,6 +59,18 @@ export default {
     },
     *add({ payload, callback }, { call, put }) {
       yield call(addGame, payload);
+
+      // let response = yield call(queryCompanyList, {
+      //   ...payload.pagination
+      // });
+      // yield put({
+      //   type: "save",
+      //   payload: response
+      // });
+      if (callback) callback();
+    },
+    *update({ payload, callback }, { call, put }) {
+      yield call(updateGame, payload.game);
 
       // let response = yield call(queryCompanyList, {
       //   ...payload.pagination

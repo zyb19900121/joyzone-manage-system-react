@@ -158,8 +158,8 @@ class Game extends React.Component {
       game: { gameList },
       loading
     } = this.props;
-
-    let dataList = gameList.list || [];
+    let dataList = [];
+    gameList && gameList.list && (dataList = gameList.list);
 
     const { pageSize, current } = this.state;
     return (

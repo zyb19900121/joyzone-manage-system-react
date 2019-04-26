@@ -19,7 +19,7 @@ export async function addType(params) {
 export async function selectType(params) {
   return request(`${baseUrl}/manage/gameTypeReact/${restFormat(params)}`);
 }
-//编辑游戏公司
+//编辑游戏类型
 export async function updateType(params) {
   const id = params.id;
   delete params.id;
