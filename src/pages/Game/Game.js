@@ -159,6 +159,8 @@ class Game extends React.Component {
       loading
     } = this.props;
     let dataList = [];
+    let total;
+    gameList && gameList.total && (total = gameList.total);
     gameList && gameList.list && (dataList = gameList.list);
 
     const { pageSize, current } = this.state;

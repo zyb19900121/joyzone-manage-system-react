@@ -17,7 +17,8 @@ import {
   Button,
   Modal,
   message,
-  Select
+  Select,
+  Upload
 } from "antd";
 import PageHeaderWrapper from "@/components/PageHeaderWrapper";
 import FooterToolbar from "@/components/FooterToolbar";
@@ -38,6 +39,10 @@ const Option = Select.Option;
 }))
 @Form.create()
 class CreateGame extends React.Component {
+  state = {
+    loading: false
+  };
+
   componentDidMount() {
     const { dispatch, location } = this.props;
 
@@ -96,19 +101,22 @@ class CreateGame extends React.Component {
       { force: true, scroll: { offsetTop: 100 } },
       (err, values) => {
         if (!err) {
+          values.sale_date = moment(values.sale_date).format("YYYY-MM-DD");
           if (gameId) {
             dispatch({
               type: "game/update",
               payload: {
-								game: {id:gameId,...values},
-								
+                game: { id: gameId, ...values }
+              },
+              callback: () => {
+                router.push({
+                  pathname: "/gamemanage/game/list",
+                  state: {
+                    pagination: { ...this.props.location.state.pagination }
+                  }
+                });
+                message.success("添加成功");
               }
-              // callback: () => {
-              //   router.push({
-              //     pathname: "/gamemanage/game"
-              //   });
-              //   message.success("添加成功");
-              // }
             });
           } else {
             dispatch({
@@ -118,7 +126,10 @@ class CreateGame extends React.Component {
               },
               callback: () => {
                 router.push({
-                  pathname: "/gamemanage/game"
+                  pathname: "/gamemanage/game/list",
+                  state: {
+                    pagination: { ...this.props.location.state.pagination }
+                  }
                 });
                 message.success("添加成功");
               }
@@ -127,6 +138,22 @@ class CreateGame extends React.Component {
         }
       }
     );
+  };
+
+  beforeUpload = file => {
+    const isJPG = file.type === "image/jpeg" || file.type === "image/png";
+    if (!isJPG) {
+      message.error("游戏封面类型必须为JPG或PNG格式!");
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error("文件大小不得超过2MB!");
+    }
+    return isJPG && isLt2M;
+  };
+
+  handleUpload = file => {
+    console.log("file: ", file);
   };
 
   render() {
@@ -145,6 +172,13 @@ class CreateGame extends React.Component {
     const typeList = type.data.list;
     const companyList = company.data.list;
     const { getFieldDecorator } = form;
+
+    const uploadButton = (
+      <div>
+        <Icon type={this.state.loading ? "loading" : "plus"} />
+        <div className="ant-upload-text">Upload</div>
+      </div>
+    );
 
     let typeOptions,
       companyOptions = [];
@@ -284,10 +318,36 @@ class CreateGame extends React.Component {
               })(<InputNumber min={1} max={10} step={0.5} />)}
             </FormItem>
 
+            <FormItem {...formItemLayout} label="游戏封面">
+              {getFieldDecorator("game_cover")(
+                <Upload
+                  name="avatar"
+                  listType="picture-card"
+                  className="avatar-uploader"
+                  showUploadList={false}
+                  customRequest={this.handleUpload}
+                  // action="//jsonplaceholder.typicode.com/posts/"
+                  beforeUpload={this.beforeUpload}
+                  // onChange={this.handleChange}
+                >
+                  {gameDetail.game_cover ? (
+                    <img
+                      className={styles.imgCover}
+                      src={`${baseUrl()}${gameDetail.game_cover}`}
+                      alt="avatar"
+                    />
+                  ) : (
+                    uploadButton
+                  )}
+                </Upload>
+              )}
+            </FormItem>
+
             <FormItem {...formItemLayout} label="已发售">
               {getFieldDecorator("is_sold", {
-                initialValue: Boolean(gameDetail.is_sold) || true
-              })(<Switch defaultChecked />)}
+                valuePropName: "checked",
+                initialValue: gameId ? Boolean(gameDetail.is_sold) : true
+              })(<Switch />)}
             </FormItem>
 
             <FormItem {...formItemLayout} label="发售时间">
