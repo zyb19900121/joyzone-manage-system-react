@@ -104,6 +104,28 @@ export default function request(url, option) {
         ...newOptions.headers
       };
     }
+  } else if (newOptions.method === "UPLOAD") {
+    //这部分为上传文件
+    newOptions.method = "POST";
+    const dataParament = newOptions.body;
+
+    //你可以在这里查看你要传的文件对象
+    let filedata = new FormData();
+
+    if (newOptions.body.files) {
+      //这里可以包装多文
+      dataParament.files.forEach(file => {
+        filedata.append("file", file);
+      });
+    }
+    for (let item in dataParament) {
+      if (item != "files" && dataParament[item]) {
+        //除了文件之外的 其他参数 用这个循环加到filedata中
+        filedata.append(item, dataParament[item]);
+      }
+    }
+
+    newOptions.body = filedata;
   }
 
   const expirys = options.expirys && 60;

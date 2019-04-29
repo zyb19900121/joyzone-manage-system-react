@@ -205,7 +205,7 @@ class Game extends React.Component {
                           </p>
                         </div>
                         <div className={styles.infoItem}>
-                          <p className={styles.score}>{item.game_score}</p>
+                          <p className={styles.score}>{item.game_score.toFixed(1)}</p>
                         </div>
                         <div
                           className={styles.infoItem}
@@ -234,7 +234,7 @@ class Game extends React.Component {
                     </div>
                     <img
                       className={styles.gameCover}
-                      src={`${baseUrl()}${item.game_cover1}`}
+                      src={`${baseUrl()}${item.game_cover}`}
                     />
                   </div>
                 </List.Item>

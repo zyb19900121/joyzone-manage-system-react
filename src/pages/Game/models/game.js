@@ -3,6 +3,7 @@ import {
   getGameDetail,
   addGame,
   updateGame,
+  uploadGameCover,
   removeGame
 } from "@/services/game";
 
@@ -31,7 +32,6 @@ export default {
     },
 
     *clearGameDetail({ payload }, { call, put }) {
-      console.log("payload: ", payload);
       yield put({
         type: "gameDetail",
         payload
@@ -59,27 +59,15 @@ export default {
     },
     *add({ payload, callback }, { call, put }) {
       yield call(addGame, payload);
-
-      // let response = yield call(queryCompanyList, {
-      //   ...payload.pagination
-      // });
-      // yield put({
-      //   type: "save",
-      //   payload: response
-      // });
       if (callback) callback();
     },
     *update({ payload, callback }, { call, put }) {
       yield call(updateGame, payload.game);
-
-      // let response = yield call(queryCompanyList, {
-      //   ...payload.pagination
-      // });
-      // yield put({
-      //   type: "save",
-      //   payload: response
-      // });
       if (callback) callback();
+    },
+    *upload({ payload, callback }, { call, put }) {
+      let response = yield call(uploadGameCover, payload);
+      if (callback) callback(response);
     }
   },
 

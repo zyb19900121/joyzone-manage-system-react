@@ -40,7 +40,8 @@ const Option = Select.Option;
 @Form.create()
 class CreateGame extends React.Component {
   state = {
-    loading: false
+    loading: false,
+    imgUrl: ""
   };
 
   componentDidMount() {
@@ -153,7 +154,29 @@ class CreateGame extends React.Component {
   };
 
   handleUpload = file => {
-    console.log("file: ", file);
+    const { dispatch, form } = this.props;
+
+    form.getFieldValue("game_cover");
+
+    this.setState({
+      loading: true
+    });
+    dispatch({
+      type: "game/upload",
+      payload: {
+        files: [file.file],
+        type: "game_cover"
+      },
+      callback: imgUrl => {
+        this.setState({
+          loading: false,
+          imgUrl: imgUrl.url
+        });
+        form.setFieldsValue({
+          game_cover: imgUrl.url
+        });
+      }
+    });
   };
 
   render() {
@@ -319,21 +342,23 @@ class CreateGame extends React.Component {
             </FormItem>
 
             <FormItem {...formItemLayout} label="游戏封面">
-              {getFieldDecorator("game_cover")(
+              {getFieldDecorator("game_cover", {
+                // valuePropName: "fileList",
+                // getValueFromEvent: this.normFile
+              })(
                 <Upload
                   name="avatar"
                   listType="picture-card"
                   className="avatar-uploader"
                   showUploadList={false}
                   customRequest={this.handleUpload}
-                  // action="//jsonplaceholder.typicode.com/posts/"
                   beforeUpload={this.beforeUpload}
-                  // onChange={this.handleChange}
                 >
-                  {gameDetail.game_cover ? (
+                  {this.state.imgUrl || gameDetail.game_cover ? (
                     <img
                       className={styles.imgCover}
-                      src={`${baseUrl()}${gameDetail.game_cover}`}
+                      src={`${baseUrl()}${this.state.imgUrl ||
+                        gameDetail.game_cover}`}
                       alt="avatar"
                     />
                   ) : (
