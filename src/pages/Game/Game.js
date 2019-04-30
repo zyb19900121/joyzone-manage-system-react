@@ -21,6 +21,66 @@ import styles from "./Game.less";
 
 import { baseUrl } from "@/utils/global";
 
+const FormItem = Form.Item;
+
+const SearchForm = Form.create()(props => {
+  const {
+    form: { getFieldDecorator },
+    handleSearch,
+    handleResetSearchForm
+  } = props;
+  // const okHandle = () => {
+  //   form.validateFields((err, fieldsValue) => {
+  //     if (err) return;
+  //     // form.resetFields();
+  //     currentCompany
+  //       ? handleUpdate({ id: currentCompany.id, ...fieldsValue })
+  //       : handleAdd(fieldsValue);
+  //   });
+  // };
+  // const formItemLayout = {
+  //   labelCol: {
+  //     xs: { span: 24 },
+  //     sm: { span: 7 }
+  //   },
+  //   wrapperCol: {
+  //     xs: { span: 24 },
+  //     sm: { span: 12 },
+  //     md: { span: 10 }
+  //   }
+  // };
+
+  return (
+    <Form onSubmit={handleSearch}>
+      <Row>
+        <Col xl={5} lg={8} md={12} sm={12}>
+          <FormItem label="游戏平台">
+            {getFieldDecorator("range-time-picker")(
+              <Select placeholder="请选择" allowClear>
+                <Option value="PlayStation4">PlayStation4</Option>
+                <Option value="Nintendo Switch">Nintendo Switch</Option>
+                <Option value="Xbox One">Xbox One</Option>
+              </Select>
+            )}
+          </FormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+          <span className={styles.submitButtons}>
+            <Button type="primary" htmlType="submit">
+              查询
+            </Button>
+            <Button style={{ marginLeft: 8 }} onClick={handleResetSearchForm}>
+              重置
+            </Button>
+          </span>
+        </Col>
+      </Row>
+    </Form>
+  );
+});
+
 @connect(({ game, loading }) => ({
   game,
   loading: loading.models.game
@@ -33,10 +93,10 @@ class Game extends React.Component {
 
   initialParams = {
     pageSize: 10,
-    current: 1
+    current: 1,
     // platform: "",
     // gameType: "",
-    // isSold: true
+    isSold: true
   };
 
   componentDidMount() {
@@ -71,7 +131,8 @@ class Game extends React.Component {
   componentWillUnmount() {
     this.initialParams = {
       pageSize: 10,
-      current: 1
+      current: 1,
+      isSold: true
     };
   }
 
@@ -153,6 +214,15 @@ class Game extends React.Component {
       }
     });
   };
+
+  handleSearch = () => {
+    console.log("handleSearch");
+  };
+
+  handleResetSearchForm = () => {
+    console.log("handleResetSearchForm");
+  };
+
   render() {
     const {
       game: { gameList },
@@ -163,12 +233,18 @@ class Game extends React.Component {
     gameList && gameList.total && (total = gameList.total);
     gameList && gameList.list && (dataList = gameList.list);
 
+    const parentMethods = {
+      handleSearch: this.handleSearch,
+      handleResetSearchForm: this.handleResetSearchForm
+    };
+
     const { pageSize, current } = this.state;
     return (
       <PageHeaderWrapper title="游戏库">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>
+              <SearchForm {...parentMethods} />
               <Button
                 icon="plus"
                 type="primary"
@@ -191,7 +267,7 @@ class Game extends React.Component {
                 showSizeChanger: true,
                 onShowSizeChange: this.handlePageSizeChange,
                 onChange: this.handlePageChange,
-                total: gameList.total
+                total: total
               }}
               renderItem={item => (
                 <List.Item className={styles.gameItem}>
@@ -205,7 +281,9 @@ class Game extends React.Component {
                           </p>
                         </div>
                         <div className={styles.infoItem}>
-                          <p className={styles.score}>{item.game_score.toFixed(1)}</p>
+                          <p className={styles.score}>
+                            {item.game_score.toFixed(1)}
+                          </p>
                         </div>
                         <div
                           className={styles.infoItem}
