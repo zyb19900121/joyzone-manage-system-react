@@ -308,6 +308,7 @@ class GameCompany extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
+              rowKey="id"
               data={data}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}

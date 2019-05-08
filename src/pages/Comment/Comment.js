@@ -307,7 +307,8 @@ class Comment extends PureComponent {
             <StandardTable
               selectedRows={selectedRows}
               loading={loading}
-              data={data}
+							data={data}
+							rowKey="id"
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleTableChange}

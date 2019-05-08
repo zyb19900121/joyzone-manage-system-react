@@ -506,7 +506,7 @@ class TableList extends PureComponent {
   };
 
   renderSimpleForm() {
-		console.log('this.props: ', this.props);
+		
     const {
       form: { getFieldDecorator },
 		} = this.props;

@@ -306,7 +306,8 @@ class GameType extends PureComponent {
             </div>
             <StandardTable
               selectedRows={selectedRows}
-              loading={loading}
+							loading={loading}
+							rowKey="id"
               data={data}
               columns={this.columns}
               onSelectRow={this.handleSelectRows}
