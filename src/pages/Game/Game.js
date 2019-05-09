@@ -156,7 +156,7 @@ const SearchFormAdvanced = Form.create()(props => {
           </FormItem>
         </Col>
         <Col md={8} sm={24}>
-          <FormItem label="排序">
+          <FormItem label="排序依据">
             {getFieldDecorator("orderBy")(
               <Select placeholder="请选择" allowClear>
                 <Option value="game_score DESC">游戏评分（高到低）</Option>
@@ -353,6 +353,7 @@ class Game extends React.Component {
         dispatch({
           type: "game/remove",
           payload: {
+            searchParams: this.searchParams,
             pagination: {
               current: this.state.current,
               pageSize: this.state.pageSize
@@ -374,7 +375,7 @@ class Game extends React.Component {
     });
     const { dispatch } = this.props;
 
-    this.searchParams = formValues;
+    this.searchParams = { ...this.searchParams, ...formValues };
 
     const params = {
       ...this.initialParams,

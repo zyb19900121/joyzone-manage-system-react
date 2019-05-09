@@ -696,7 +696,10 @@ models: () => [
             "path": "/gamemanage/gallery",
             "name": "gallery",
             "component": _dvaDynamic({
-  
+  app: window.g_app,
+models: () => [
+  import(/* webpackChunkName: 'p__Gallery__models__gallery.js' */'/Users/zyb/work/joyzone-manage-system-react/src/pages/Gallery/models/gallery.js').then(m => { return { namespace: 'gallery',...m.default}})
+],
   component: () => import(/* webpackChunkName: "p__Gallery__Gallery" */'../Gallery/Gallery'),
   LoadingComponent: require('/Users/zyb/work/joyzone-manage-system-react/src/components/PageLoading/index').default,
 }),

@@ -25,23 +25,6 @@ export async function uploadGameCover(params) {
   });
 }
 
-// let param = new FormData(); //创建form对象
-//     if (data.type) {
-//       param.append("type", data.type);
-//     }
-//     param.append("file", data.file); //通过append向form对象添加数据
-
-//     let config = {
-//       method: "post",
-//       url,
-//       baseURL: baseURL,
-//       // data: qs.stringify(data),
-//       timeout: 30000,
-//       responseType: "json",
-//       headers: { "Content-Type": "multipart/form-data" }
-//     };
-//     return axios.post(url, param, config);
-
 //更新游戏
 export async function updateGame(params) {
   console.log("params: ", params);

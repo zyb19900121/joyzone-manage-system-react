@@ -42,12 +42,14 @@ export default {
       yield call(removeGame, payload.id);
 
       let response = yield call(queryGameList, {
+        ...payload.searchParams,
         ...payload.pagination
       });
 
       if (!response.list.length && payload.pagination.current > 1) {
         payload.pagination.current--;
         response = yield call(queryGameList, {
+          ...payload.searchParams,
           ...payload.pagination
         });
       }
