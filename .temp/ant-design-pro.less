@@ -3129,7 +3129,7 @@ font.weak {
 
 /* 
   Convert to from  src/pages/Gallery/Gallery.less
-*/
+ */
 
 .antd-pro-pages-gallery-gallery-tableList {
   .antd-pro-pages-gallery-gallery-tableListOperator {
@@ -3177,13 +3177,12 @@ font.weak {
 }
 
 .antd-pro-pages-gallery-gallery-gameItem {
-  height: 258px;
-  margin: 25px;
+  height: 160px;
+  margin: 16px;
   position: relative;
   width: 160px;
   box-shadow: 2px 4px 12px 2px rgba(0, 0, 0, 0.3);
   transition: 0.3s;
-  // border: 1px solid #ebeef5;
   background-color: #fff;
   border-radius: 5px;
   overflow: hidden;
@@ -3191,6 +3190,10 @@ font.weak {
     position: relative;
     width: 100%;
     height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
     &:hover {
       .antd-pro-pages-gallery-gallery-gameDetail {
         opacity: 1;
@@ -3248,7 +3251,7 @@ font.weak {
     }
     .antd-pro-pages-gallery-gallery-gameCover {
       width: 100%;
-      height: 100%;
+      height: auto;
     }
   }
 }

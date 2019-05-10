@@ -4,8 +4,6 @@ import request from "@/utils/request";
 import { baseUrl } from "@/utils/global";
 
 //查询游戏图集
-export async function queryGameList(params) {
-  return request(`${baseUrl()}/manage/gameReact?${stringify(params)}`);
+export async function queryGalleryList(params) {
+  return request(`${baseUrl()}/manage/gameGalleryReact?${stringify(params)}`);
 }
-
-

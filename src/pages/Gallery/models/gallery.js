@@ -1,11 +1,4 @@
-import {
-  queryGameList,
-  getGameDetail,
-  addGame,
-  updateGame,
-  uploadGameCover,
-  removeGame
-} from "@/services/game";
+import { queryGalleryList } from "@/services/gallery";
 
 export default {
   namespace: "gallery",
@@ -16,20 +9,20 @@ export default {
   },
 
   effects: {
-    *getGameList({ payload }, { call, put }) {
-      const response = yield call(queryGameList, payload);
+    *getGalleryList({ payload }, { call, put }) {
+      const response = yield call(queryGalleryList, payload);
       yield put({
-        type: "gameList",
+        type: "galleryList",
         payload: response
       });
     }
   },
 
   reducers: {
-    gameList(state, action) {
+    galleryList(state, action) {
       return {
         ...state,
-        gameList: action.payload
+        galleryList: action.payload
       };
     }
   }

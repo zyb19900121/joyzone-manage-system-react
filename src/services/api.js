@@ -1,8 +1,7 @@
 import { stringify } from "qs";
 import restFormat from "@/utils/restfulParamsFormat";
 import request from "@/utils/request";
-
-const baseUrl = "http://127.0.0.1:3000";
+import { baseUrl } from "@/utils/global";
 
 /**
  * 新增接口
@@ -11,7 +10,7 @@ const baseUrl = "http://127.0.0.1:3000";
 //获取短信验证码
 export async function getCaptcha(params) {
   // return request(`${baseUrl}/api/log?${stringify(params)}`)
-  return request(`${baseUrl}/getCaptcha`, {
+  return request(`${baseUrl()}/getCaptcha`, {
     method: "POST",
     body: {
       ...params,
@@ -23,7 +22,7 @@ export async function getCaptcha(params) {
 //查看用户名是否被注册
 export async function checkExist(params) {
   // return request(`${baseUrl}/api/log?${stringify(params)}`)
-  return request(`${baseUrl}/checkExist`, {
+  return request(`${baseUrl()}/checkExist`, {
     method: "POST",
     body: {
       ...params,
@@ -35,7 +34,7 @@ export async function checkExist(params) {
 //查看手机号是否被注册
 export async function checkMobileExist(params) {
   // return request(`${baseUrl}/api/log?${stringify(params)}`)
-  return request(`${baseUrl}/checkMobileExist`, {
+  return request(`${baseUrl()}/checkMobileExist`, {
     method: "POST",
     body: {
       ...params,
@@ -47,7 +46,7 @@ export async function checkMobileExist(params) {
 //用户注册
 export async function register(params) {
   // return request(`${baseUrl}/api/log?${stringify(params)}`)
-  return request(`${baseUrl}/register`, {
+  return request(`${baseUrl()}/register`, {
     method: "POST",
     body: {
       ...params,
@@ -58,7 +57,7 @@ export async function register(params) {
 
 //用户登陆
 export async function login(params) {
-  return request(`${baseUrl}/loginForReact`, {
+  return request(`${baseUrl()}/loginForReact`, {
     method: "POST",
     body: {
       ...params,
@@ -69,12 +68,12 @@ export async function login(params) {
 
 //查询评论列表
 export async function queryCommentList(params) {
-  return request(`${baseUrl}/manage/gameCommentReact?${stringify(params)}`);
+  return request(`${baseUrl()}/manage/gameCommentReact?${stringify(params)}`);
 }
 
 //删除评论
 export async function removeComment(params) {
-  return request(`${baseUrl}/manage/gameCommentReact/${restFormat(params)}`, {
+  return request(`${baseUrl()}/manage/gameCommentReact/${restFormat(params)}`, {
     method: "DELETE",
     body: {
       // ...params,
@@ -85,13 +84,13 @@ export async function removeComment(params) {
 
 //查询访问日志
 export async function queryLogList(params) {
-  return request(`${baseUrl}/manage/log?${stringify(params)}`);
+  return request(`${baseUrl()}/manage/log?${stringify(params)}`);
 }
 
 //删除访问日志
 export async function removeLogRecords(params) {
   // return request(`${baseUrl}/api/log?${stringify(params)}`)
-  return request(`${baseUrl}/manage/log/${restFormat(params)}`, {
+  return request(`${baseUrl()}/manage/log/${restFormat(params)}`, {
     method: "DELETE",
     body: {
       // ...params,

@@ -57,6 +57,7 @@ export default {
           token: ""
         }
       });
+      localStorage.MY_GAME_TOKEN = "";
       reloadAuthorized();
       yield put(
         routerRedux.replace({

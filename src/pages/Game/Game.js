@@ -509,7 +509,7 @@ class Game extends React.Component {
                     </div>
                     <img
                       className={styles.gameCover}
-                      src={`${baseUrl()}${item.game_cover1}`}
+                      src={`${baseUrl()}${item.game_cover}`}
                     />
                   </div>
                 </List.Item>

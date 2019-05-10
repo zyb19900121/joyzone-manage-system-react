@@ -354,7 +354,6 @@ class Register extends Component {
             })(
               <Input
                 size="large"
-                type="password"
                 placeholder={formatMessage({
                   id: "form.nickname.placeholder"
                 })}

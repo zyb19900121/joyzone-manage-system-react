@@ -20,9 +20,7 @@ export function getAuthority(str) {
 
 export function setAuthority(payload) {
   const proAuthority =
-    typeof payload.userInfo.authority === "string"
-      ? [payload.userInfo.authority]
-      : payload.userInfo.authority;
+    typeof payload === "string" ? payload : payload.userInfo.authority;
   localStorage.MY_GAME_TOKEN = payload.token;
   return localStorage.setItem(
     "antd-pro-authority",
