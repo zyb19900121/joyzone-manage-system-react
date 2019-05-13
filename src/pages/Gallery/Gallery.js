@@ -83,22 +83,27 @@ class Gallery extends React.Component {
               renderItem={item => (
                 <List.Item className={styles.gameItem}>
                   <div className={styles.gameContainer}>
-                    {/* <div className={styles.gameDetail}>
+                    <div className={styles.gameDetail}>
+                      <div className={styles.detailInfo}>
+                        <div className={styles.infoItem}>
+                          <p className={styles.gameName}>{item.game_name}</p>
+                        </div>
+                      </div>
                       <div className={styles.operationArea}>
                         <Button
                           type="primary"
                           shape="circle"
-                          icon="edit"
-                          onClick={() => this.handleEditGame(item.id)}
+                          icon="zoom-in"
+                          onClick={() => this.handlePreviewImage(item.id)}
                         />
                         <Button
                           type="danger"
                           shape="circle"
                           icon="delete"
-                          onClick={() => this.handleDeleteGame(item.id)}
+                          onClick={() => this.handleDeleteImage(item.id)}
                         />
                       </div>
-                    </div> */}
+                    </div>
                     <img
                       className={styles.gameCover}
                       src={`${baseUrl()}${item.image_src}`}
